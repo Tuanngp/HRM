@@ -44,7 +44,7 @@ public partial class EmployeeListViewModel : ObservableObject
         // Initialize collections and commands
         Employees = new ObservableCollection<Employee?>();
         Departments = new ObservableCollection<Department?>();
-        Genders = new ObservableCollection<Gender>();
+        Genders = new ObservableCollection<Gender> { Gender.Male , Gender.Female, Gender.Other};
         SalaryRanges = new ObservableCollection<string> { "< 5,000", "5,000 - 10,000", "> 10,000" };
 
         // Initialize commands

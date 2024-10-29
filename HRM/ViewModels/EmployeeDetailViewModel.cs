@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -124,7 +125,7 @@ public partial class EmployeeDetailViewModel : ObservableObject
         CloseWindow();
     }
 
-    private void ExecuteChangePhoto()
+    private async void ExecuteChangePhoto()
     {
         var openFileDialog = new OpenFileDialog
         {
@@ -138,6 +139,14 @@ public partial class EmployeeDetailViewModel : ObservableObject
             {
                 string newPhotoPath = SavePhotoToStorage(openFileDialog.FileName);
                 Employee.PhotoPath = newPhotoPath;
+                if (await _employeeService.UploadAvatarAsync(EmployeeId, newPhotoPath))
+                {
+                    MessageBox.Show("Photo changed successfully!", "Success");
+                }
+                else
+                {
+                    MessageBox.Show("Failed to change photo", "Error");
+                }
             }
             catch (Exception ex)
             {
@@ -148,10 +157,24 @@ public partial class EmployeeDetailViewModel : ObservableObject
 
     private string SavePhotoToStorage(string sourceFilePath)
     {
-        // Implementation to save the photo to application storage
-        // and return the new file path
-        // This is just a placeholder - implement according to your storage strategy
-        return sourceFilePath;
+        // Define the directory where photos will be stored
+        string photoDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "avatar");
+
+        // Ensure the directory exists
+        if (!Directory.Exists(photoDirectory))
+        {
+            Directory.CreateDirectory(photoDirectory);
+        }
+
+        // Generate a unique file name for the photo
+        string fileName = Path.GetFileName(sourceFilePath);
+        string destinationFilePath = Path.Combine(photoDirectory, fileName);
+
+        // Copy the photo to the storage directory
+        File.Copy(sourceFilePath, destinationFilePath, true);
+
+        // Return the new file path
+        return destinationFilePath;
     }
 
     private bool ValidateEmployee()

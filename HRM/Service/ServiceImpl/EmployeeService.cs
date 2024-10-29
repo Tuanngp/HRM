@@ -107,11 +107,6 @@ public class EmployeeService : IEmployeeService
         await _employeeRepository.DeleteAsync(id);
     }
 
-    public Task<string> UploadAvatarAsync(int id, IFileProvider avatar)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<IEnumerable<Employee>> SearchEmployeesAsync(string searchTerm, 
         int? departmentId, 
         DateTime? startDate, 
@@ -142,9 +137,9 @@ public class EmployeeService : IEmployeeService
     {
         var query = _employeeRepository.GetQueryable();
 
-        if (!string.IsNullOrEmpty(selectedGender))
+        if (!string.IsNullOrEmpty(selectedGender) && Enum.TryParse<Gender>(selectedGender, out var gender))
         {
-            query = query.Where(e => e.Gender.ToString() == selectedGender);
+            query = query.Where(e => e.Gender == gender);
         }
 
         if (!string.IsNullOrEmpty(selectedSalaryRange))

@@ -53,7 +53,7 @@
                     </MenuItem>
                     <MenuItem Header="Quản lý lương"
                               Command="{Binding NavigateCommand}"
-                              CommandParameter="PayrollManagement">
+                              CommandParameter="SalaryManagement">
                         <MenuItem.Icon>
                             <materialDesign:PackIcon Kind="CashMultiple"/>
                         </MenuItem.Icon>

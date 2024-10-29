@@ -26,7 +26,8 @@ public class NavigationService : INavigationService
             { "EmployeeListView", typeof(EmployeeListView) },
             { "EmployeeDetailView", typeof(EmployeeDetailView) },
             { "DepartmentListView", typeof(DepartmentListView) },
-            { "DepartmentDetailView", typeof(DepartmentDetailView) }
+            { "DepartmentDetailView", typeof(DepartmentDetailView) },
+            { "SalaryManagement", typeof(SalaryManagement)}
         };
     }
 

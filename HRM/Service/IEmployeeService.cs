@@ -13,7 +13,7 @@ public interface IEmployeeService
     Task<Employee?> CreateEmployeeAsync(Employee? employee);
     Task<Employee?> UpdateEmployeeAsync(int id, Employee? employee);
     Task DeleteEmployeeAsync(int id);
-    Task<string> UploadAvatarAsync(int id, IFileProvider avatar);
+    Task<bool> UploadAvatarAsync(int id, string avatar);
     Task<IEnumerable<Employee>> SearchEmployeesAsync(string searchTerm, 
         int? departmentId, 
         DateTime? startDate, 

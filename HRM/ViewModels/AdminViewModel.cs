@@ -54,9 +54,9 @@ public partial class AdminViewModel : ObservableObject
             case "DepartmentManagement":
                 _navigationService.NavigateTo("DepartmentListView");
                 break;
-            // case "PayrollManagement":
-            //     _navigationService.NavigateTo();
-            //     break;
+            case "SalaryManagement":
+                _navigationService.NavigateTo("SalaryManagement");
+                break;
             // case "Statistics":
             //     _navigationService.NavigateTo();
             //     break;
