@@ -2,7 +2,7 @@
 
 namespace HRM.Repositories;
 
-public interface IEmployeeRepository
+public interface IEmployeeRepository: IBaseRepository<Employee>
 {
     Task<IEnumerable<Employee>> GetEmployeesByDepartmentAsync(int departmentId);
     Task<IEnumerable<Employee>> SearchEmployeesAsync(
@@ -10,4 +10,6 @@ public interface IEmployeeRepository
         int? departmentId, 
         DateTime? startDate, 
         DateTime? endDate);
+    Task<bool> IsExist(string employeeEmployeeCode);
+    Task<IEnumerable<Employee>> GetActiveEmployeesAsync();
 }

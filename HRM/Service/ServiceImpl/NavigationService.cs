@@ -1,6 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Navigation;
 using HRM.Views;
+using HRM.Views.Admin;
+using HRM.Views.User;
 
 namespace HRM.Service.ServiceImpl;
 
@@ -19,8 +21,12 @@ public class NavigationService : INavigationService
         _pageMap = new Dictionary<string, Type>
         {
             { "LoginView", typeof(LoginView) },
+            { "AdminDashboard", typeof(AdminDashboard) },
+            { "UserDashboard", typeof(UserDashboard) },
             { "EmployeeListView", typeof(EmployeeListView) },
             { "EmployeeDetailView", typeof(EmployeeDetailView) },
+            { "DepartmentListView", typeof(DepartmentListView) },
+            { "DepartmentDetailView", typeof(DepartmentDetailView) }
         };
     }
 

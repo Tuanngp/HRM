@@ -1,10 +1,21 @@
 ﻿using HRM.Models;
+using HRM.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRM.Repositories.RepositoryImpl;
 
 public class EmployeeRepository(HrmContext context) : BaseRepository<Employee>(context), IEmployeeRepository
 {
+	public override IQueryable<Employee> AddIncludes(IQueryable<Employee> query)
+	{
+		return query.Include(e => e.Department)
+			.Include(e => e.User)
+			.Include(e => e.Attendances)
+			.Include(e => e.Salaries)
+			.Include(e => e.LeafEmployees)
+			.Include(e => e.LeafApprovedByNavigations);
+	}
+
 	public async Task<IEnumerable<Employee>> GetEmployeesByDepartmentAsync(int departmentId)
 	{
 		return await _dbSet
@@ -47,6 +58,18 @@ public class EmployeeRepository(HrmContext context) : BaseRepository<Employee>(c
 		return await query
 			.Include(e => e.Department)
 			.OrderBy(e => e.LastName)
+			.ToListAsync();
+	}
+
+	public async Task<bool> IsExist(string employeeEmployeeCode)
+	{
+		return await _dbSet.AnyAsync(e => e.EmployeeCode == employeeEmployeeCode);
+	}
+
+	public async Task<IEnumerable<Employee>> GetActiveEmployeesAsync()
+	{
+		return await _dbSet
+			.Where(e => e.Status == EmployeeStatus.Active)
 			.ToListAsync();
 	}
 }

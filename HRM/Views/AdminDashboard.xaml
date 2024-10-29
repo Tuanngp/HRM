@@ -4,9 +4,15 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:viewModels="clr-namespace:HRM.ViewModels"
+      xmlns:admin="clr-namespace:HRM.ViewModels.Admin"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AdminDashboard">
+    
+    <Page.DataContext>
+        <admin:AdminDashBoardViewModel />
+    </Page.DataContext>
     <ScrollViewer>
         <StackPanel Margin="24">
             <!-- Welcome Message -->
@@ -151,9 +157,9 @@
                                                                Height="24" Width="24"/>
 
                                         <StackPanel Grid.Column="1" Margin="16,0">
-                                            <TextBlock Text="{Binding Description}"
+                                            <TextBlock Text="{Binding Action}"
                                                      Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-                                            <TextBlock Text="{Binding Time}"
+                                            <TextBlock Text="{Binding CreatedDate}"
                                                      Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                                         </StackPanel>
                                     </Grid>

@@ -1,0 +1,64 @@
+﻿<Page x:Class="HRM.Views.Admin.DepartmentListView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      Title="DepartmentManagementView" Height="Auto" Width="Auto"
+      Background="{DynamicResource MaterialDesignPaper}">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Bar -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="Quản lý phòng ban" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Margin="0,0,20,0"/>
+            <Button Content="Thêm phòng ban" Command="{Binding AddDepartmentCommand}"
+                    Style="{StaticResource MaterialDesignRaisedButton}" Margin="0,0,0,0"/>
+        </StackPanel>
+
+        <!-- Department List -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
+            <TextBlock Text="Danh sách phòng ban" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+            <ListBox ItemsSource="{Binding Departments}"
+                     SelectedItem="{Binding SelectedDepartment}"
+                     Style="{StaticResource MaterialDesignListBox}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <TextBlock Text="{Binding Name }" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Description}" FontStyle="Italic"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <!-- Department Details -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+            <TextBlock Text="Chi tiết phòng ban" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+            <TextBox Text="{Binding SelectedDepartment.Name, UpdateSourceTrigger=PropertyChanged}"
+                                  Margin="0,0,0,10" materialDesign:HintAssist.Hint="Tên phòng ban"/>
+            <TextBox Text="{Binding SelectedDepartment.Description, UpdateSourceTrigger=PropertyChanged}"
+                      Margin="0,0,0,10" AcceptsReturn="True" materialDesign:HintAssist.Hint="Mô tả"/>
+            <TextBlock Text="Nhân viên" FontWeight="Bold" Margin="0,20,0,5"/>
+            <ListBox ItemsSource="{Binding SelectedDepartment.Employees}"
+                     Style="{StaticResource MaterialDesignListBox}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FullName}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button Content="Lưu thay đổi" Command="{Binding SaveDepartmentCommand}"
+                    Style="{StaticResource MaterialDesignRaisedButton}" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

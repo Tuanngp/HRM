@@ -2,23 +2,22 @@
 using HRM.Models;
 using HRM.Repositories;
 using HRM.Repositories.RepositoryImpl;
-using HRM.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRM.Service.ServiceImpl;
 
 public class AuthService : IAuthService
 {
-    private readonly IBaseRepository<User> _userRepository;
+    private readonly IBaseRepository<User?> _userRepository;
 
     public AuthService()
     {
         _userRepository = new UserRepository();
     }
     
-    public async Task<User> LoginAsync(string username, string password)
+    public async Task<User?> LoginAsync(string username, string password)
     {
-        User user = await _userRepository
+        User? user = await _userRepository
             .GetQueryable()
             .FirstOrDefaultAsync(u => u.Username == username);
         if (user == null)
@@ -43,13 +42,11 @@ public class AuthService : IAuthService
 
     public Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
     {
-        User user = _userRepository.GetByIdAsync(userId).Result;
+        User? user = _userRepository.GetByIdAsync(userId).Result;
         if (user.Password != (currentPassword))
-        // if (user.PasswordHash != PasswordUtils.HashPassword(currentPassword))
         {
             throw new UnauthorizedAccessException("Mật khẩu không khớp! Vui lòng thử lại.");
         }
-        user.Password = PasswordUtils.HashPassword(newPassword);
         _userRepository.UpdateAsync(user);
         return Task.FromResult(true);
     }
