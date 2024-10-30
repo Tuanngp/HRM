@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HRM.Models;
 using HRM.Views;
+using HRM.Views.User;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace HRM.ViewModels;
@@ -55,6 +56,9 @@ public partial class UserViewModel : ObservableObject
     {
         switch (destination)
         {
+            case "Home":
+                _navigationFrame.Navigate(new UserDashboard());
+                break;
             case "Profile":
                 _navigationFrame.Navigate(new UserProfileView());
                 break;
@@ -79,10 +83,12 @@ public partial class UserViewModel : ObservableObject
     {
         try
         {
-            UserName = "John Doe";
+            var emp = UserSession.Instance.Employee;
+            UserName = emp.FullName;
             UserPosition = "Software Developer";
-            UserAvatar = "/Assets/default-avatar.png";
-            NotificationCount = 3;
+            UserAvatar = emp.PhotoPath;
+            var user = UserSession.Instance.User;
+            NotificationCount = user!.NotificationReceiverUsers.Count;
             CheckInStatus = "Not checked in";
         }
         catch (Exception ex)

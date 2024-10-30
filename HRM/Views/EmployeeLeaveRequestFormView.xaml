@@ -8,216 +8,489 @@
       TextElement.FontWeight="Regular"
       TextElement.FontSize="14"
       FontFamily="{materialDesign:MaterialDesignFont}">
-<Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <!-- Left Sidebar -->
-        <Grid Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}">
-            <StackPanel>
-                <!-- User Profile Section -->
-                <Border Padding="20" BorderBrush="{StaticResource MaterialDesignShadowBrush}" BorderThickness="0,0,0,1">
+    <materialDesign:DialogHost>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Enhanced Left Sidebar -->
+            <Border Grid.Column="0"
+                    Background="Gainsboro"
+                    Effect="{DynamicResource MaterialDesignShadowDepth2}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Enhanced User Profile Section -->
+                    <Border Grid.Row="0"
+                            Padding="25"
+                            Background="Gray">
+                        <StackPanel>
+                            <Grid>
+                                <Ellipse Width="100" Height="100">
+                                    <Ellipse.Fill>
+                                        <ImageBrush x:Name="UserAvatar" ImageSource="/Assets/avatar/default.jpg" />
+                                    </Ellipse.Fill>
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="15" ShadowDepth="1" Opacity="0.3" />
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                                <materialDesign:PackIcon Kind="CheckCircle"
+                                                         Width="24" Height="24"
+                                                         Background="White"
+                                                         Foreground="Green"
+                                                         HorizontalAlignment="Right"
+                                                         VerticalAlignment="Bottom"
+                                                         Margin="0,0,10,10" />
+                            </Grid>
+                            <TextBlock x:Name="UserName"
+                                       Text="Nguyen Van A"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,15,0,5"
+                                       FontSize="18"
+                                       FontWeight="Medium"
+                                       Foreground="White" />
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Home"
+                                                         Margin="0,0,5,0"
+                                                         Foreground="White" />
+                                <TextBlock x:Name="UserDepartment"
+                                           Text="Phòng Kỹ thuật"
+                                           Foreground="White" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Enhanced Leave Summary Section -->
+                    <ScrollViewer Grid.Row="1" Margin="0,20,0,0">
+                        <StackPanel Margin="25,0">
+                            <TextBlock Text="Thống kê nghỉ phép"
+                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                       Margin="0,0,0,20" />
+
+                            <!-- Leave Statistics Cards -->
+                            <materialDesign:Card Margin="0,0,0,15" UniformCornerRadius="8">
+                                <Grid Margin="15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left">
+                                        <materialDesign:PackIcon Kind="Calendar"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Margin="0,0,8,0" />
+                                        <TextBlock Text="Tổng ngày phép"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="12 ngày"
+                                               Grid.Row="1"
+                                               FontSize="24"
+                                               FontWeight="Medium"
+                                               Margin="0,10,0,0" />
+                                </Grid>
+                            </materialDesign:Card>
+
+                            <materialDesign:Card Margin="0,0,0,15" UniformCornerRadius="8">
+                                <Grid Margin="15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left">
+                                        <materialDesign:PackIcon Kind="ClockOutline"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Margin="0,0,8,0" />
+                                        <TextBlock Text="Đã sử dụng"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="5 ngày"
+                                               Grid.Row="1"
+                                               FontSize="24"
+                                               FontWeight="Medium"
+                                               Margin="0,10,0,0" />
+                                </Grid>
+                            </materialDesign:Card>
+
+                            <materialDesign:Card Margin="0,0,0,15" UniformCornerRadius="8">
+                                <Grid Margin="15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left">
+                                        <materialDesign:PackIcon Kind="Timer"
+                                                                 Width="24"
+                                                                 Height="24"
+                                                                 Margin="0,0,8,0" />
+                                        <TextBlock Text="Còn lại"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="7 ngày"
+                                               Grid.Row="1"
+                                               FontSize="24"
+                                               FontWeight="Medium"
+                                               Foreground="{StaticResource MaterialDesignShadowBrush}"
+                                               Margin="0,10,0,0" />
+                                </Grid>
+                            </materialDesign:Card>
+
+                            <!-- Recent Leave History -->
+                            <TextBlock Text="Lịch sử nghỉ gần đây"
+                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                       Margin="0,20,0,15" />
+
+                            <ItemsControl>
+                                <materialDesign:Card Margin="0,0,0,10" UniformCornerRadius="8">
+                                    <Grid Margin="15,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="40"
+                                                Height="40"
+                                                CornerRadius="20"
+                                                Background="{StaticResource MaterialDesignShadowBrush}">
+                                            <materialDesign:PackIcon Kind="Beach"
+                                                                     Width="24"
+                                                                     Height="24"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                            <TextBlock Text="Nghỉ phép năm" FontWeight="Medium" />
+                                            <TextBlock Text="20/10/2024 - 22/10/2024"
+                                                       Opacity="0.7"
+                                                       Margin="0,5,0,0" />
+                                        </StackPanel>
+                                    </Grid>
+                                </materialDesign:Card>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Help Section -->
+                    <materialDesign:Card Grid.Row="2"
+                                         Margin="25"
+                                         UniformCornerRadius="8"
+                                         Background="{DynamicResource PrimaryHueLightBrush}">
+                        <Grid Margin="15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="HelpCircleOutline"
+                                                     Width="24"
+                                                     Height="24" />
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="Cần hỗ trợ?" FontWeight="Medium" />
+                                <TextBlock Text="Liên hệ phòng HR"
+                                           Opacity="0.7" />
+                            </StackPanel>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+            </Border>
+
+            <!-- Enhanced Main Content Area -->
+            <Grid Grid.Column="1" Margin="40">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Enhanced Header -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
                     <StackPanel>
-                        <Ellipse Width="80" Height="80">
-                            <Ellipse.Fill>
-                                <ImageBrush x:Name="UserAvatar" ImageSource="/Assets/avatar/default.jpg"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        <TextBlock x:Name="UserName" Text="Nguyen Van A" 
-                                 HorizontalAlignment="Center" Margin="0,10,0,5"/>
-                        <TextBlock x:Name="UserDepartment" Text="Phòng Kỹ thuật" 
-                                 HorizontalAlignment="Center" Opacity="0.7"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- Leave Summary Section -->
-                <Border Padding="20" BorderBrush="{StaticResource MaterialDesignShadowBrush}" BorderThickness="0,0,0,1">
-                    <StackPanel>
-                        <TextBlock Text="Thống kê nghỉ phép" 
-                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                 Margin="0,0,0,15"/>
-                        
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Tổng ngày phép:"/>
-                            <TextBlock Text="12 ngày" Grid.Column="1" FontWeight="Medium"/>
-                        </Grid>
-                        
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Đã sử dụng:"/>
-                            <TextBlock Text="5 ngày" Grid.Column="1" FontWeight="Medium"/>
-                        </Grid>
-                        
-                        <Grid Margin="0,0,0,10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Còn lại:"/>
-                            <TextBlock Text="7 ngày" Grid.Column="1" FontWeight="Medium"
-                                     Foreground="{StaticResource MaterialDesignShadowBrush}"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Navigation Menu -->
-                <ListView Margin="0,20,0,0" SelectedIndex="2">
-                    <ListViewItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Calendar" Margin="0,0,15,0"/>
-                            <TextBlock Text="Lịch làm việc"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="ClockIn" Margin="0,0,15,0"/>
-                            <TextBlock Text="Chấm công"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Form" Margin="0,0,15,0"/>
-                            <TextBlock Text="Đơn xin nghỉ phép"/>
-                        </StackPanel>
-                    </ListViewItem>
-                </ListView>
-            </StackPanel>
-        </Grid>
-
-        <!-- Main Content Area -->
-        <Grid Grid.Column="1" Margin="30">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <!-- Header -->
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel>
-                    <TextBlock Text="Đơn xin nghỉ phép" 
-                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
-                    <TextBlock Text="Vui lòng điền đầy đủ thông tin bên dưới" 
-                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                             Opacity="0.7"/>
-                </StackPanel>
-
-                <!-- List View Button -->
-                <Button Grid.Column="1" 
-                        Style="{StaticResource MaterialDesignOutlinedButton}"
-                        HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="FormatListBulleted" Margin="0,0,5,0"/>
-                        <TextBlock Text="Xem danh sách đơn"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-
-            <!-- Leave Request Form -->
-            <ScrollViewer Grid.Row="1" Margin="0,20,0,0" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <!-- Leave Type -->
-                    <ComboBox materialDesign:HintAssist.Hint="Loại nghỉ phép"
-                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                              Margin="0,0,0,20">
-                        <ComboBoxItem Content="Nghỉ phép năm"/>
-                        <ComboBoxItem Content="Nghỉ ốm"/>
-                        <ComboBoxItem Content="Nghỉ không lương"/>
-                        <ComboBoxItem Content="Nghỉ việc riêng"/>
-                    </ComboBox>
-
-                    <!-- Date Selection -->
-                    <Grid Margin="0,0,0,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <DatePicker materialDesign:HintAssist.Hint="Ngày bắt đầu"
-                                   Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
-
-                        <DatePicker Grid.Column="2"
-                                   materialDesign:HintAssist.Hint="Ngày kết thúc"
-                                   Style="{StaticResource MaterialDesignOutlinedDatePicker}"/>
-                    </Grid>
-
-                    <!-- Half Day Options -->
-                    <StackPanel Margin="0,0,0,20">
-                        <TextBlock Text="Thời gian nghỉ" 
-                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                 Margin="0,0,0,10"/>
-                        <RadioButton Content="Cả ngày" 
-                                   Style="{StaticResource MaterialDesignChoiceChipPrimaryRadioButton}"
-                                   Margin="0,0,8,0"/>
-                        <RadioButton Content="Nửa ngày sáng" 
-                                   Style="{StaticResource MaterialDesignChoiceChipPrimaryRadioButton}"
-                                   Margin="0,8,8,0"/>
-                        <RadioButton Content="Nửa ngày chiều" 
-                                   Style="{StaticResource MaterialDesignChoiceChipPrimaryRadioButton}"
-                                   Margin="0,8,8,0"/>
+                        <TextBlock Text="Đơn xin nghỉ phép"
+                                   Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                                   FontWeight="Bold" />
+                        <TextBlock Text="Vui lòng điền đầy đủ thông tin bên dưới"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Opacity="0.7"
+                                   Margin="0,5,0,0" />
                     </StackPanel>
 
-                    <!-- Reason -->
-                    <TextBox materialDesign:HintAssist.Hint="Lý do nghỉ phép"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             TextWrapping="Wrap"
-                             MinHeight="100"
-                             AcceptsReturn="True"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,0,0,20"/>
-
-                    <!-- Contact Information -->
-                    <TextBox materialDesign:HintAssist.Hint="Địa chỉ/Số điện thoại liên hệ trong thời gian nghỉ"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             Margin="0,0,0,20"/>
-
-                    <!-- Handover Information -->
-                    <TextBox materialDesign:HintAssist.Hint="Thông tin bàn giao công việc (nếu có)"
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             TextWrapping="Wrap"
-                             MinHeight="100"
-                             AcceptsReturn="True"
-                             VerticalScrollBarVisibility="Auto"
-                             Margin="0,0,0,20"/>
-
-                    <!-- File Attachment -->
-                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,20">
+                    <!-- Enhanced List View Button -->
+                    <Button Grid.Column="1"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Height="50">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Paperclip" Margin="0,0,5,0"/>
-                            <TextBlock Text="Đính kèm tệp tin"/>
+                            <materialDesign:PackIcon Kind="FormatListBulleted"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="Xem danh sách đơn"
+                                       VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                </StackPanel>
-            </ScrollViewer>
+                </Grid>
 
-            <!-- Action Buttons -->
-            <StackPanel Grid.Row="2" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right"
-                        Margin="0,20,0,0">
-                <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                        Content="Hủy"
-                        Margin="0,0,10,0"/>
-                <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                        Content="Gửi đơn"/>
-            </StackPanel>
+                <!-- Enhanced Leave Request Form -->
+                <ScrollViewer Grid.Row="1"
+                              Margin="0,30,0,0"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Leave Type with Icon -->
+                        <Grid Margin="0,0,0,25">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <materialDesign:PackIcon Kind="FormSelect"
+                                                     Width="24"
+                                                     Height="24"
+                                                     Margin="0,0,15,0"
+                                                     VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1"
+                                      materialDesign:HintAssist.Hint="Loại nghỉ phép"
+                                      Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                                <ComboBoxItem>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Beach" Margin="0,0,8,0" />
+                                        <TextBlock Text="Nghỉ phép năm" />
+                                    </StackPanel>
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Hospital" Margin="0,0,8,0" />
+                                        <TextBlock Text="Nghỉ ốm" />
+                                    </StackPanel>
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="AccountClock" Margin="0,0,8,0" />
+                                        <TextBlock Text="Nghỉ không lương" />
+                                    </StackPanel>
+                                </ComboBoxItem>
+                                <ComboBoxItem>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="CalendarClock" Margin="0,0,8,0" />
+                                        <TextBlock Text="Nghỉ việc riêng" />
+                                    </StackPanel>
+                                </ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
+
+                        <!-- Enhanced Date Selection -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <Grid Margin="20">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Thời gian nghỉ phép"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Grid.ColumnSpan="3"
+                                           Margin="0,0,0,15" />
+
+                                <DatePicker Grid.Row="1" Grid.Column="0"
+                                            materialDesign:HintAssist.Hint="Ngày bắt đầu"
+                                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+
+                                <DatePicker Grid.Row="1"
+                                            Grid.Column="2"
+                                            materialDesign:HintAssist.Hint="Ngày kết thúc"
+                                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <!-- Enhanced Half Day Options -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <StackPanel Margin="20">
+                                <TextBlock Text="Thời gian nghỉ trong ngày"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Margin="0,0,0,15" />
+
+                                <WrapPanel>
+                                    <RadioButton
+                                        Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"
+                                        Margin="0,0,10,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Clock" Margin="0,0,5,0" />
+                                            <TextBlock Text="Cả ngày" />
+                                        </StackPanel>
+                                    </RadioButton>
+
+                                    <RadioButton
+                                        Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"
+                                        Margin="0,0,10,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="WeatherSunny" Margin="0,0,5,0" />
+                                            <TextBlock Text="Nửa ngày sáng" />
+                                        </StackPanel>
+                                    </RadioButton>
+
+                                    <RadioButton
+                                        Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"
+                                        Margin="0,0,10,10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="WeatherNight" Margin="0,0,5,0" />
+                                            <TextBlock Text="Nửa ngày chiều" />
+                                        </StackPanel>
+                                    </RadioButton>
+                                </WrapPanel>
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- Enhanced Reason Section -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <StackPanel Margin="20">
+                                <TextBlock Text="Lý do nghỉ phép"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Margin="0,0,0,15" />
+
+                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         TextWrapping="Wrap"
+                                         MinHeight="100"
+                                         AcceptsReturn="True"
+                                         VerticalScrollBarVisibility="Auto"
+                                         materialDesign:HintAssist.Hint="Nhập lý do nghỉ phép chi tiết" />
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- Enhanced Contact Information -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <StackPanel Margin="20">
+                                <TextBlock Text="Thông tin liên hệ"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Margin="0,0,0,15" />
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                             materialDesign:HintAssist.Hint="Số điện thoại">
+                                        <!-- <TextBox.LeadingIcon> -->
+                                        <!--     <materialDesign:PackIcon Kind="Phone" /> -->
+                                        <!-- </TextBox.LeadingIcon> -->
+                                    </TextBox>
+
+                                    <TextBox Grid.Column="2"
+                                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                             materialDesign:HintAssist.Hint="Địa chỉ">
+                                        <!-- <TextBox.LeadingIcon> -->
+                                        <!--     <materialDesign:PackIcon Kind="MapMarker" /> -->
+                                        <!-- </TextBox.LeadingIcon> -->
+                                    </TextBox>
+                                </Grid>
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- Enhanced Handover Information -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <StackPanel Margin="20">
+                                <TextBlock Text="Thông tin bàn giao công việc"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Margin="0,0,0,15" />
+
+                                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         TextWrapping="Wrap"
+                                         MinHeight="100"
+                                         AcceptsReturn="True"
+                                         VerticalScrollBarVisibility="Auto"
+                                         materialDesign:HintAssist.Hint="Nhập thông tin bàn giao công việc" />
+                            </StackPanel>
+                        </materialDesign:Card>
+
+                        <!-- Enhanced File Attachment -->
+                        <materialDesign:Card Margin="0,0,0,25" UniformCornerRadius="8">
+                            <StackPanel Margin="20">
+                                <TextBlock Text="Tệp đính kèm"
+                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                           Margin="0,0,0,15" />
+
+                                <Border BorderThickness="2"
+                                        BorderBrush="{StaticResource MaterialDesignShadowBrush}"
+                                        CornerRadius="4"
+                                        Padding="20">
+                                        <!-- Background="{StaticResource MaterialDesignPr}"> -->
+                                    <Grid>
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="CloudUpload"
+                                                                     Width="48"
+                                                                     Height="48"
+                                                                     HorizontalAlignment="Center" />
+                                            <TextBlock Text="Kéo thả file vào đây hoặc click để chọn file"
+                                                       TextAlignment="Center"
+                                                       Margin="0,10" />
+                                            <TextBlock Text="Hỗ trợ: JPG, PNG, PDF (Tối đa 5MB)"
+                                                       TextAlignment="Center"
+                                                       Opacity="0.7" />
+                                        </StackPanel>
+
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                                Height="Auto"
+                                                Width="Auto"
+                                                Opacity="0" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Enhanced Action Buttons -->
+                <Grid Grid.Row="2"
+                      Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="1"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Margin="0,0,10,0"
+                            Height="45"
+                            Width="120">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Close"
+                                                     Margin="0,0,5,0" />
+                            <TextBlock Text="Hủy" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Column="2"
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Height="45"
+                            Width="120">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Send"
+                                                     Margin="0,0,5,0" />
+                            <TextBlock Text="Gửi đơn" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Grid>
         </Grid>
-    </Grid>
+    </materialDesign:DialogHost>
 </Page>

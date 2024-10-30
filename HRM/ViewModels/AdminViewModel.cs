@@ -70,8 +70,7 @@ public partial class AdminViewModel : ObservableObject
         try
         {
             IsLoading = true;
-            var currentUser = UserSession.Instance.User;
-            var currentEmp = await _employeeService.GetByUserId(currentUser.Id);
+            var currentEmp = UserSession.Instance.Employee;
             AdminName = currentEmp.FullName;
             AdminAvatar = await LoadAvatarImage(currentEmp.PhotoPath);
         }

@@ -6,222 +6,410 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
       Title="EmployeeSalaryInformationView" Height="Auto" Width="Auto">
-<Grid>
+
+    <Page.Resources>
+        <!-- Style cho các card thông tin tổng quan -->
+        <Style x:Key="SummaryCardStyle" TargetType="materialDesign:Card">
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="materialDesign:ElevationAssist.Elevation" Value="Dp2" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="UniformCornerRadius" Value="8" />
+        </Style>
+
+        <!-- Style cho các text block tiêu đề -->
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock"
+               BasedOn="{StaticResource MaterialDesignSubtitle1TextBlock}">
+            <Setter Property="Margin" Value="0,0,0,15" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+
+        <!-- Style cho các grid item -->
+        <Style x:Key="GridItemStyle" TargetType="Grid">
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+    </Page.Resources>
+
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Main Content Area -->
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <Grid Margin="30">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
+                <!-- Header với thông tin nhân viên -->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <StackPanel>
-                        <TextBlock Text="Bảng lương" 
-                                 Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
-                        <TextBlock Text="Tháng 10, 2024" 
-                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                 Opacity="0.7"/>
+                        <TextBlock Text="Bảng lương"
+                                   Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                                   FontWeight="Bold" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <TextBlock Text="Nguyễn Văn A"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                       FontWeight="Medium" />
+                            <TextBlock Text=" - Nhân viên phát triển phần mềm"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                       Opacity="0.7" />
+                        </StackPanel>
                     </StackPanel>
 
-                    <!-- Month Selection -->
+                    <!-- Month Selection với animation -->
                     <ComboBox Grid.Column="1"
                               Width="200"
                               materialDesign:HintAssist.Hint="Chọn tháng"
-                              Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                        <ComboBoxItem Content="Tháng 10, 2024"/>
-                        <ComboBoxItem Content="Tháng 9, 2024"/>
-                        <ComboBoxItem Content="Tháng 8, 2024"/>
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              BorderThickness="1">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="FontWeight" Value="Medium" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="{Binding}" />
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBoxItem Content="Tháng 10, 2024" />
+                        <ComboBoxItem Content="Tháng 9, 2024" />
+                        <ComboBoxItem Content="Tháng 8, 2024" />
                     </ComboBox>
                 </Grid>
 
-                <!-- Summary Cards -->
-                <Grid Grid.Row="1" Margin="0,20,0,0">
+                <!-- Summary Cards với animation -->
+                <Grid Grid.Row="1" Margin="0,24,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="20" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <!-- Gross Salary Card -->
-                    <materialDesign:Card Background="{DynamicResource MaterialDesignPaper}" Padding="15">
+                    <materialDesign:Card Style="{StaticResource SummaryCardStyle}">
                         <StackPanel>
-                            <TextBlock Text="Tổng thu nhập" 
-                                     Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                     Opacity="0.7"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <materialDesign:PackIcon Kind="CurrencyUsd"
+                                                         Width="24" Height="24"
+                                                         Foreground="{StaticResource MaterialDesignShadowBrush}" />
+                                <TextBlock Text="Tổng thu nhập"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.7" />
+                            </StackPanel>
                             <TextBlock Text="25,000,000 VNĐ"
-                                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                     Foreground="{StaticResource MaterialDesignShadowBrush}"/>
-                            <TextBlock Text="+8.5% so với tháng trước"
-                                     Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                                     Foreground="{StaticResource MaterialDesignShadowBrush}"/>
-
+                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource MaterialDesignShadowBrush}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <materialDesign:PackIcon Kind="TrendingUp"
+                                                         Foreground="#4CAF50" />
+                                <TextBlock Text="+8.5% so với tháng trước"
+                                           Margin="4,0,0,0"
+                                           Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           Foreground="#4CAF50" />
+                            </StackPanel>
                         </StackPanel>
                     </materialDesign:Card>
 
                     <!-- Deductions Card -->
-                    <materialDesign:Card Grid.Column="2" Background="{DynamicResource MaterialDesignPaper}" Padding="15">
+                    <materialDesign:Card Grid.Column="2" Style="{StaticResource SummaryCardStyle}">
                         <StackPanel>
-                            <TextBlock Text="Các khoản giảm trừ" 
-                                     Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                     Opacity="0.7"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <materialDesign:PackIcon Kind="Calculator"
+                                                         Width="24" Height="24"
+                                                         Foreground="#FF5252" />
+                                <TextBlock Text="Các khoản giảm trừ"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.7" />
+                            </StackPanel>
                             <TextBlock Text="2,500,000 VNĐ"
-                                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                     Foreground="#FF5252"/>
+                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                       FontWeight="Bold"
+                                       Foreground="#FF5252" />
                         </StackPanel>
                     </materialDesign:Card>
 
                     <!-- Net Salary Card -->
-                    <materialDesign:Card Grid.Column="4" Background="{DynamicResource MaterialDesignPaper}" Padding="15">
+                    <materialDesign:Card Grid.Column="4" Style="{StaticResource SummaryCardStyle}">
                         <StackPanel>
-                            <TextBlock Text="Thực lãnh" 
-                                     Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                     Opacity="0.7"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <materialDesign:PackIcon Kind="WalletOutline"
+                                                         Width="24" Height="24"
+                                                         Foreground="#4CAF50" />
+                                <TextBlock Text="Thực lãnh"
+                                           Style="{StaticResource MaterialDesignBody1TextBlock}"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.7" />
+                            </StackPanel>
                             <TextBlock Text="22,500,000 VNĐ"
-                                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                     Foreground="#4CAF50"/>
+                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                       FontWeight="Bold"
+                                       Foreground="#4CAF50" />
                         </StackPanel>
                     </materialDesign:Card>
                 </Grid>
 
+                <!-- Chart Section -->
+                <materialDesign:Card Grid.Row="2" Margin="0,20,0,0" Style="{StaticResource SummaryCardStyle}">
+                    <Grid Height="250">
+                        <TextBlock Text="Biểu đồ lương 6 tháng gần nhất"
+                                   Style="{StaticResource SectionTitleStyle}" />
+                        <!-- Placeholder for chart -->
+                        <Border BorderBrush="{StaticResource MaterialDesignShadowBrush}"
+                                BorderThickness="1"
+                                Margin="0,40,0,0" />
+                    </Grid>
+                </materialDesign:Card>
+
                 <!-- Detailed Salary Information -->
-                <materialDesign:Card Grid.Row="2" Margin="0,20,0,0" Padding="20">
+                <materialDesign:Card Grid.Row="3" Margin="0,20,0,0" Style="{StaticResource SummaryCardStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!-- Income Section -->
                         <StackPanel Grid.Row="0">
-                            <TextBlock Text="Thu nhập" 
-                                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                     Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <materialDesign:PackIcon Kind="CashPlus"
+                                                         Width="24" Height="24"
+                                                         VerticalAlignment="Center" />
+                                <TextBlock Text="Thu nhập"
+                                           Style="{StaticResource SectionTitleStyle}"
+                                           Margin="8,0,0,0" />
+                            </StackPanel>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Lương cơ bản"/>
-                                <TextBlock Text="20,000,000 VNĐ" Grid.Column="1"/>
+                                <TextBlock Text="Lương cơ bản" FontWeight="Medium" />
+                                <TextBlock Text="20,000,000 VNĐ" Grid.Column="1"
+                                           FontWeight="Medium" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Phụ cấp ăn trưa"/>
-                                <TextBlock Text="1,000,000 VNĐ" Grid.Column="1"/>
+                                <StackPanel>
+                                    <TextBlock Text="Phụ cấp ăn trưa" />
+                                    <TextBlock Text="50,000 VNĐ/ngày"
+                                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               Opacity="0.7" />
+                                </StackPanel>
+                                <TextBlock Text="1,000,000 VNĐ" Grid.Column="1" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Phụ cấp xăng xe"/>
-                                <TextBlock Text="1,500,000 VNĐ" Grid.Column="1"/>
+                                <TextBlock Text="Phụ cấp xăng xe" />
+                                <TextBlock Text="1,500,000 VNĐ" Grid.Column="1" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Thưởng hiệu suất"/>
-                                <TextBlock Text="2,500,000 VNĐ" Grid.Column="1"/>
+                                <StackPanel>
+                                    <TextBlock Text="Thưởng hiệu suất" />
+                                    <TextBlock Text="Hoàn thành 125% KPI"
+                                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               Foreground="#4CAF50" />
+                                </StackPanel>
+                                <TextBlock Text="2,500,000 VNĐ" Grid.Column="1"
+                                           Foreground="#4CAF50" />
                             </Grid>
                         </StackPanel>
 
-                        <Separator Grid.Row="1" Margin="0,15"/>
+                        <Separator Grid.Row="1" Margin="0,15" />
 
                         <!-- Deductions Section -->
                         <StackPanel Grid.Row="2">
-                            <TextBlock Text="Các khoản giảm trừ" 
-                                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                     Margin="0,15,0,15"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,15,0,15">
+                                <materialDesign:PackIcon Kind="CashMinus"
+                                                         Width="24" Height="24"
+                                                         VerticalAlignment="Center" />
+                                <TextBlock Text="Các khoản giảm trừ"
+                                           Style="{StaticResource SectionTitleStyle}"
+                                           Margin="8,0,0,0" />
+                            </StackPanel>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Bảo hiểm xã hội (8%)"/>
-                                <TextBlock Text="1,600,000 VNĐ" Grid.Column="1"/>
+                                <StackPanel>
+                                    <TextBlock Text="Bảo hiểm xã hội (8%)" />
+                                    <TextBlock Text="Tính trên lương cơ bản"
+                                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               Opacity="0.7" />
+                                </StackPanel>
+                                <TextBlock Text="1,600,000 VNĐ" Grid.Column="1" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Bảo hiểm y tế (1.5%)"/>
-                                <TextBlock Text="300,000 VNĐ" Grid.Column="1"/>
+                                <TextBlock Text="Bảo hiểm y tế (1.5%)" />
+                                <TextBlock Text="300,000 VNĐ" Grid.Column="1" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Bảo hiểm thất nghiệp (1%)"/>
-                                <TextBlock Text="200,000 VNĐ" Grid.Column="1"/>
+                                <TextBlock Text="Bảo hiểm thất nghiệp (1%)" />
+                                <TextBlock Text="200,000 VNĐ" Grid.Column="1" />
                             </Grid>
 
-                            <Grid Margin="0,0,0,10">
+                            <Grid Style="{StaticResource GridItemStyle}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Thuế thu nhập cá nhân"/>
-                                <TextBlock Text="400,000 VNĐ" Grid.Column="1"/>
+                                <StackPanel>
+                                    <TextBlock Text="Thuế thu nhập cá nhân" />
+                                    <TextBlock Text="Thuế suất: 5%"
+                                               Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                               Opacity="0.7" />
+                                </StackPanel>
+                                <TextBlock Text="400,000 VNĐ" Grid.Column="1" />
                             </Grid>
                         </StackPanel>
                     </Grid>
                 </materialDesign:Card>
 
+                <!-- Additional Information Card -->
+                <materialDesign:Card Grid.Row="4" Margin="0,20,0,20" Style="{StaticResource SummaryCardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Thông tin bổ sung"
+                                   Style="{StaticResource SectionTitleStyle}" />
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <materialDesign:PackIcon Kind="CalendarMonth"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,8,0" />
+                            <StackPanel Grid.Column="1" Margin="0,0,24,0">
+                                <TextBlock Text="Ngày công thực tế"
+                                           Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           Opacity="0.7" />
+                                <TextBlock Text="22/22 ngày" FontWeight="Medium" />
+                            </StackPanel>
+
+                            <materialDesign:PackIcon Kind="ClockOutline"
+                                                     Grid.Column="2"
+                                                     VerticalAlignment="Center"
+                                                     Margin="0,0,8,0" />
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="Số giờ làm thêm"
+                                           Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                           Opacity="0.7" />
+                                <TextBlock Text="8 giờ" FontWeight="Medium" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Ghi chú -->
+                        <materialDesign:Card
+                            Background="{DynamicResource MaterialDesignBackground}"
+                            UniformCornerRadius="4"
+                            Padding="16"
+                            Margin="0,8,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Ghi chú"
+                                           Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                           Margin="0,0,0,8" />
+                                <TextBlock Text="- Thưởng hiệu suất tháng này tăng do hoàn thành vượt KPI"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}" />
+                                <TextBlock Text="- Đã bao gồm phụ cấp làm thêm giờ ngày 15/10/2024"
+                                           Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                           Margin="0,4,0,0" />
+                            </StackPanel>
+                        </materialDesign:Card>
+                    </StackPanel>
+                </materialDesign:Card>
+
                 <!-- Action Buttons -->
-                <StackPanel Grid.Row="3" 
-                           Orientation="Horizontal" 
-                           HorizontalAlignment="Right"
-                           Margin="0,20,0,0">
+                <StackPanel Grid.Row="5"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Margin="0,20,0,0">
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            Margin="0,0,10,0">
+                            Margin="0,0,12,0"
+                            materialDesign:ButtonAssist.CornerRadius="4">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Microsoft" Margin="0,0,5,0"/>
-                            <TextBlock Text="Xuất Excel"/>
+                            <materialDesign:PackIcon Kind="Microsoft"
+                                                     Width="20" Height="20"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="Xuất Excel" />
                         </StackPanel>
                     </Button>
+
                     <Button Style="{StaticResource MaterialDesignOutlinedButton}"
-                            Margin="0,0,10,0">
+                            Margin="0,0,12,0"
+                            materialDesign:ButtonAssist.CornerRadius="4">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="FilePdfBox" Margin="0,0,5,0"/>
-                            <TextBlock Text="Xuất PDF"/>
+                            <materialDesign:PackIcon Kind="FilePdfBox"
+                                                     Width="20" Height="20"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="Xuất PDF" />
                         </StackPanel>
                     </Button>
-                    <!-- <Button Style="{StaticResource MaterialDesignOutlinedButton}"> -->
-                    <!--     <StackPanel Orientation="Horizontal"> -->
-                    <!--         <materialDesign:PackIcon Kind="Printer" Margin="0,0,5,0"/> -->
-                    <!--         <TextBlock Text="In bảng lương"/> -->
-                    <!--     </StackPanel> -->
-                    <!-- </Button> -->
+
+                    <Button Style="{StaticResource MaterialDesignPaperButton}"
+                            Background="#4CAF50"
+                            Foreground="White"
+                            materialDesign:ButtonAssist.CornerRadius="4">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="EmailOutline"
+                                                     Width="20" Height="20"
+                                                     Margin="0,0,8,0" />
+                            <TextBlock Text="Gửi email" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
