@@ -34,6 +34,12 @@ public class EmployeeService : IEmployeeService
         return employee;
     }
 
+    public async Task<Employee?> GetByUserId(int userId)
+    {
+        return await _employeeRepository.GetQueryable()
+            .FirstOrDefaultAsync(e => e.UserId == userId);
+    }
+
     public Task<Employee?> GetByEmployeeCodeAsync(string code)
     {
         return _employeeRepository.GetQueryable()

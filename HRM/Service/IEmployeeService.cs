@@ -10,6 +10,7 @@ public interface IEmployeeService
     Task<IEnumerable<Employee?>> GetAllEmployees();
     Task<Employee?> GetByEmployeeCodeAsync(string code);
     Task<Employee?> GetByIdAsync(int id);
+    Task<Employee?> GetByUserId(int userId);
     Task<Employee?> CreateEmployeeAsync(Employee? employee);
     Task<Employee?> UpdateEmployeeAsync(int id, Employee? employee);
     Task DeleteEmployeeAsync(int id);

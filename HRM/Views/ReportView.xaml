@@ -1,0 +1,278 @@
+﻿<Page x:Class="HRM.Views.ReportView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d"
+      Title="ReportView" Height="Auto" Width="Auto">
+<Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="BÁO CÁO VÀ THỐNG KÊ" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Control Panel -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Bộ lọc -->
+            <StackPanel Grid.Column="0" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center">
+                <ComboBox Width="150" 
+                          Margin="0,0,10,0"
+                          materialDesign:HintAssist.Hint="Loại báo cáo">
+                    <ComboBoxItem Content="Báo cáo chấm công"/>
+                    <ComboBoxItem Content="Báo cáo nhân sự"/>
+                    <ComboBoxItem Content="Báo cáo lương"/>
+                    <ComboBoxItem Content="Báo cáo nghỉ phép"/>
+                </ComboBox>
+
+                <ComboBox Width="150" 
+                          Margin="0,0,10,0"
+                          materialDesign:HintAssist.Hint="Phòng ban"
+                          ItemsSource="{Binding Departments}"/>
+
+                <DatePicker Width="120" 
+                           Margin="0,0,10,0"
+                           materialDesign:HintAssist.Hint="Từ ngày"/>
+
+                <DatePicker Width="120" 
+                           Margin="0,0,10,0"
+                           materialDesign:HintAssist.Hint="Đến ngày"/>
+
+                <Button Content="Tạo báo cáo" 
+                        Width="120"
+                        Style="{StaticResource MaterialDesignRaisedButton}"/>
+            </StackPanel>
+
+            <!-- Nút xuất báo cáo -->
+            <StackPanel Grid.Column="1" 
+                        Orientation="Horizontal">
+                <Button Content="Xuất Excel" 
+                        Margin="0,0,10,0"
+                        Style="{StaticResource MaterialDesignRaisedButton}"/>
+                <Button Content="Xuất PDF"
+                        Style="{StaticResource MaterialDesignRaisedButton}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Thống kê tổng quan -->
+            <Grid Grid.Column="0" Grid.Row="0" Margin="0,0,10,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Tổng nhân viên -->
+                <Border Grid.Column="0" 
+                        Margin="5" 
+                        Padding="15" 
+                        Background="#4CAF50" 
+                        CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Tổng nhân viên" 
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding TotalEmployees}" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Đi muộn -->
+                <Border Grid.Column="1" 
+                        Margin="5" 
+                        Padding="15" 
+                        Background="#FFC107" 
+                        CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Đi muộn" 
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding LateEmployees}" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Nghỉ phép -->
+                <Border Grid.Column="2" 
+                        Margin="5" 
+                        Padding="15" 
+                        Background="#2196F3" 
+                        CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Nghỉ phép" 
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding OnLeaveEmployees}" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tăng ca -->
+                <Border Grid.Column="3" 
+                        Margin="5" 
+                        Padding="15" 
+                        Background="#9C27B0" 
+                        CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="Tăng ca" 
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding OvertimeEmployees}" 
+                                   FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="White"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Biểu đồ chấm công theo thời gian -->
+            <Grid Grid.Column="0" Grid.Row="1" Margin="0,0,10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Biểu đồ chấm công theo thời gian" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"/>
+
+                <wpf:CartesianChart Grid.Row="1">
+                    <wpf:CartesianChart.Series>
+                        <wpf:LineSeries Values="{Binding AttendanceData}" 
+                                       Title="Số lượng nhân viên"/>
+                    </wpf:CartesianChart.Series>
+                    <wpf:CartesianChart.AxisX>
+                        <wpf:Axis Title="Ngày" Labels="{Binding Dates}"/>
+                    </wpf:CartesianChart.AxisX>
+                    <wpf:CartesianChart.AxisY>
+                        <wpf:Axis Title="Số lượng"/>
+                    </wpf:CartesianChart.AxisY>
+                </wpf:CartesianChart>
+            </Grid>
+
+            <!-- Biểu đồ phân bố nhân viên theo phòng ban -->
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Phân bố nhân viên theo phòng ban" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"/>
+
+                <wpf:PieChart Grid.Row="1" 
+                             Series="{Binding DepartmentDistribution}"
+                             LegendLocation="Right"/>
+            </Grid>
+        </Grid>
+
+        <!-- Chi tiết báo cáo -->
+        <TabControl Grid.Row="3" Margin="0,20,0,0">
+            <!-- Tab báo cáo chấm công -->
+            <TabItem Header="Báo cáo chấm công">
+                <DataGrid AutoGenerateColumns="False" 
+                          ItemsSource="{Binding AttendanceReport}"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã NV" 
+                                          Binding="{Binding EmployeeId}"/>
+                        <DataGridTextColumn Header="Họ tên" 
+                                          Binding="{Binding EmployeeName}"/>
+                        <DataGridTextColumn Header="Phòng ban" 
+                                          Binding="{Binding Department}"/>
+                        <DataGridTextColumn Header="Tổng ngày công" 
+                                          Binding="{Binding TotalWorkDays}"/>
+                        <DataGridTextColumn Header="Đi muộn" 
+                                          Binding="{Binding LateCount}"/>
+                        <DataGridTextColumn Header="Về sớm" 
+                                          Binding="{Binding EarlyLeaveCount}"/>
+                        <DataGridTextColumn Header="Nghỉ phép" 
+                                          Binding="{Binding LeaveCount}"/>
+                        <DataGridTextColumn Header="Tăng ca (giờ)" 
+                                          Binding="{Binding OvertimeHours}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab báo cáo lương -->
+            <TabItem Header="Báo cáo lương">
+                <DataGrid AutoGenerateColumns="False" 
+                          ItemsSource="{Binding SalaryReport}"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã NV" 
+                                          Binding="{Binding EmployeeId}"/>
+                        <DataGridTextColumn Header="Họ tên" 
+                                          Binding="{Binding EmployeeName}"/>
+                        <DataGridTextColumn Header="Phòng ban" 
+                                          Binding="{Binding Department}"/>
+                        <DataGridTextColumn Header="Lương cơ bản" 
+                                          Binding="{Binding BaseSalary}"/>
+                        <DataGridTextColumn Header="Phụ cấp" 
+                                          Binding="{Binding Allowance}"/>
+                        <DataGridTextColumn Header="Thưởng" 
+                                          Binding="{Binding Bonus}"/>
+                        <DataGridTextColumn Header="Khấu trừ" 
+                                          Binding="{Binding Deduction}"/>
+                        <DataGridTextColumn Header="Tổng thu nhập" 
+                                          Binding="{Binding TotalSalary}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab báo cáo nghỉ phép -->
+            <TabItem Header="Báo cáo nghỉ phép">
+                <DataGrid AutoGenerateColumns="False" 
+                          ItemsSource="{Binding LeaveReport}"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã NV" 
+                                          Binding="{Binding EmployeeId}"/>
+                        <DataGridTextColumn Header="Họ tên" 
+                                          Binding="{Binding EmployeeName}"/>
+                        <DataGridTextColumn Header="Phòng ban" 
+                                          Binding="{Binding Department}"/>
+                        <DataGridTextColumn Header="Tổng ngày phép" 
+                                          Binding="{Binding TotalLeaveQuota}"/>
+                        <DataGridTextColumn Header="Đã sử dụng" 
+                                          Binding="{Binding UsedLeave}"/>
+                        <DataGridTextColumn Header="Còn lại" 
+                                          Binding="{Binding RemainingLeave}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

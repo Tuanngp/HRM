@@ -2,9 +2,9 @@
 
 namespace HRM.Views;
 
-public partial class SalaryManagement : Page
+public partial class TimekeepingManagementView : Page
 {
-    public SalaryManagement()
+    public TimekeepingManagementView()
     {
         InitializeComponent();
     }

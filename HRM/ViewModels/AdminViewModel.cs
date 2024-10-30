@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using HRM.Models;
 using HRM.Service;
 using HRM.Service.ServiceImpl;
 
@@ -13,7 +14,7 @@ public partial class AdminViewModel : ObservableObject
 {
     private readonly INavigationService _navigationService;
     private readonly IAuthService _authService;
-    // private readonly IUserService _userService;
+    private readonly IEmployeeService _employeeService;
 
     [ObservableProperty] private string _adminName;
     [ObservableProperty] private BitmapImage _adminAvatar;
@@ -26,7 +27,7 @@ public partial class AdminViewModel : ObservableObject
     {
         _navigationService = new NavigationService(frame);
         _authService = new AuthService();
-        // _userService = userService;
+        _employeeService = new EmployeeService();
 
         // Initialize commands
         NavigateCommand = new RelayCommand<string>(ExecuteNavigate);
@@ -55,11 +56,11 @@ public partial class AdminViewModel : ObservableObject
                 _navigationService.NavigateTo("DepartmentListView");
                 break;
             case "SalaryManagement":
-                _navigationService.NavigateTo("SalaryManagement");
+                _navigationService.NavigateTo("SalaryManagementView");
                 break;
-            // case "Statistics":
-            //     _navigationService.NavigateTo();
-            //     break;
+            case "Statistics":
+                _navigationService.NavigateTo("ReportView");
+                break;
         }
     }
 
@@ -87,30 +88,31 @@ public partial class AdminViewModel : ObservableObject
         }
     }
 
-    // private async void LoadAdminInfo()
-    // {
-    //     try
-    //     {
-    //         IsLoading = true;
-    //         var currentUser = await _userService.GetCurrentUserAsync();
-    //         AdminName = currentUser.FullName;
-    //         AdminAvatar = await LoadAvatarImage(currentUser.AvatarUrl);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         // Handle loading error
-    //         ShowError("Lỗi tải thông tin", ex.Message);
-    //     }
-    //     finally
-    //     {
-    //         IsLoading = false;
-    //     }
-    // }
+    private async void LoadAdminInfo()
+    {
+        try
+        {
+            IsLoading = true;
+            var currentUser = UserSession.Instance.User;
+            var currentEmp = await _employeeService.GetByUserId(currentUser.Id);
+            AdminName = currentEmp.FullName;
+            AdminAvatar = await LoadAvatarImage(currentEmp.PhotoPath);
+        }
+        catch (Exception ex)
+        {
+            // Handle loading error
+            ShowError("Lỗi tải thông tin", ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     private async Task<BitmapImage> LoadAvatarImage(string avatarUrl)
     {
         if (string.IsNullOrEmpty(avatarUrl))
-            return new BitmapImage(new Uri("pack://application:,,,/Assets/default-avatar.png"));
+            return new BitmapImage(new Uri("pack://application:,,,/Assets/avatar/default.jpg"));
 
         try
         {
@@ -123,7 +125,7 @@ public partial class AdminViewModel : ObservableObject
         }
         catch
         {
-            return new BitmapImage(new Uri("pack://application:,,,/Assets/default-avatar.png"));
+            return new BitmapImage(new Uri("pack://application:,,,/Assets/avatar/default.jpg"));
         }
     }
 

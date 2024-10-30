@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
-using System.Windows.Navigation;
-using HRM.Views;
+﻿using HRM.Views;
 using HRM.Views.Admin;
 using HRM.Views.User;
+using System.Windows.Controls;
+using System.Windows.Navigation;
 
 namespace HRM.Service.ServiceImpl;
 
@@ -27,7 +27,10 @@ public class NavigationService : INavigationService
             { "EmployeeDetailView", typeof(EmployeeDetailView) },
             { "DepartmentListView", typeof(DepartmentListView) },
             { "DepartmentDetailView", typeof(DepartmentDetailView) },
-            { "SalaryManagement", typeof(SalaryManagement)}
+            { "SalaryManagementView", typeof(SalaryManagementView)},
+            {"TimekeepingManagementView", typeof(TimekeepingManagementView)},
+            {"ReportView", typeof(ReportView)},
+            {"UserProfileView", typeof(UserProfileView)}
         };
     }
 

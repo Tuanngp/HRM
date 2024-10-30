@@ -5,185 +5,402 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="800" d:DesignWidth="1200"
       Title="UserDashboard">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Dashboard Header -->
-        <TextBlock Grid.Row="0"
-                   Text="Dashboard"
-                   Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                   Margin="20" />
+        <!-- Top Navigation Bar -->
+        <materialDesign:ColorZone Grid.Row="0" Mode="PrimaryMid" Padding="16" materialDesign:ShadowAssist.ShadowAnimationDuration="200">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Thông báo">
+                        <materialDesign:PackIcon Kind="BellOutline" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Cài đặt">
+                        <materialDesign:PackIcon Kind="CogOutline" />
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Hồ sơ">
+                        <materialDesign:PackIcon Kind="AccountCircleOutline" />
+                    </Button>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Dashboard" Style="{StaticResource MaterialDesignHeadline5TextBlock}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </DockPanel>
+        </materialDesign:ColorZone>
 
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <Grid Margin="20">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!-- Quick Stats Cards -->
-                <WrapPanel Grid.Row="0"
-                           Orientation="Horizontal"
-                           Margin="0,0,0,20">
-
-                    <!-- Attendance Card -->
-                    <materialDesign:Card Margin="0,0,20,20"
-                                         Width="250"
-                                         Padding="16">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,10">
-                                <materialDesign:PackIcon Kind="CalendarClock"
-                                                         Width="24"
-                                                         Height="24" />
-                                <TextBlock Text="Chấm công hôm nay"
-                                           Margin="10,0,0,0"
-                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}" />
-                            </StackPanel>
-                            <TextBlock Text="{Binding TodayAttendance}"
-                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
-                            <TextBlock Text="{Binding AttendanceTime}"
-                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
+                <!-- Quick Actions -->
+                <WrapPanel Grid.Row="0" Margin="0,0,0,20">
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" Margin="0,0,8,0"
+                            Command="{Binding CheckInCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ClockIn" Margin="0,0,8,0"/>
+                            <TextBlock Text="Chấm công"/>
                         </StackPanel>
+                    </Button>
+                    
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" Margin="0,0,8,0"
+                            Command="{Binding RequestLeaveCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CalendarPlus" Margin="0,0,8,0"/>
+                            <TextBlock Text="Đăng ký nghỉ phép"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <Button Style="{StaticResource MaterialDesignRaisedButton}" Margin="0,0,8,0"
+                            Command="{Binding ViewReportsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="FileDocumentOutline" Margin="0,0,8,0"/>
+                            <TextBlock Text="Báo cáo"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <!-- Stats Cards -->
+                <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,20">
+                    <!-- Attendance Card -->
+                    <materialDesign:Card Margin="0,0,20,20" Width="280" Padding="16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0">
+                                <DockPanel>
+                                    <materialDesign:PackIcon Kind="CalendarClock" Width="24" Height="24"/>
+                                    <TextBlock Text="Chấm công hôm nay" Margin="8,0,0,0" 
+                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                </DockPanel>
+                                
+                                <TextBlock Text="{Binding TodayAttendance}" 
+                                         Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                         Margin="0,8,0,0"/>
+                                
+                                <TextBlock Text="{Binding AttendanceTime}"
+                                         Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Margin="0,16,0,0">
+                                <TextBlock Text="Thống kê tuần này:" 
+                                         Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Đúng giờ:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding WeeklyOnTimeCount}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Đi muộn:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding WeeklyLateCount}" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
                     </materialDesign:Card>
 
                     <!-- Leave Balance Card -->
-                    <materialDesign:Card Margin="0,0,20,20"
-                                         Width="250"
-                                         Padding="16">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,10">
-                                <materialDesign:PackIcon Kind="Beach"
-                                                         Width="24"
-                                                         Height="24" />
-                                <TextBlock Text="Số ngày nghỉ còn lại"
-                                           Margin="10,0,0,0"
-                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}" />
+                    <materialDesign:Card Margin="0,0,20,20" Width="280" Padding="16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0">
+                                <DockPanel>
+                                    <materialDesign:PackIcon Kind="Beach" Width="24" Height="24"/>
+                                    <TextBlock Text="Ngày nghỉ phép" Margin="8,0,0,0"
+                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                </DockPanel>
+                                
+                                <TextBlock Text="{Binding LeaveBalance}"
+                                         Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                         Margin="0,8,0,0"/>
+                                
+                                <TextBlock Text="ngày còn lại"
+                                         Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding LeaveBalance}"
-                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
-                            <TextBlock Text="ngày"
-                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
-                        </StackPanel>
+
+                            <StackPanel Grid.Row="1" Margin="0,16,0,0">
+                                <TextBlock Text="Chi tiết:" 
+                                         Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Nghỉ phép năm:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding AnnualLeave}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Nghỉ bệnh:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding SickLeave}" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
                     </materialDesign:Card>
 
-                    <!-- Upcoming Events Card -->
-                    <materialDesign:Card Margin="0,0,20,20"
-                                         Width="250"
-                                         Padding="16">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,0,0,10">
-                                <materialDesign:PackIcon Kind="Calendar"
-                                                         Width="24"
-                                                         Height="24" />
-                                <TextBlock Text="Sự kiện sắp tới"
-                                           Margin="10,0,0,0"
-                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}" />
+                    <!-- Tasks Card -->
+                    <materialDesign:Card Margin="0,0,20,20" Width="280" Padding="16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0">
+                                <DockPanel>
+                                    <materialDesign:PackIcon Kind="CheckboxMarkedCircleOutline" Width="24" Height="24"/>
+                                    <TextBlock Text="Công việc" Margin="8,0,0,0"
+                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                                </DockPanel>
+                                
+                                <TextBlock Text="{Binding PendingTasksCount}"
+                                         Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                         Margin="0,8,0,0"/>
+                                
+                                <TextBlock Text="việc cần làm"
+                                         Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding UpcomingEventsCount}"
-                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
-                            <TextBlock Text="sự kiện trong tuần này"
-                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
-                        </StackPanel>
+
+                            <StackPanel Grid.Row="1" Margin="0,16,0,0">
+                                <TextBlock Text="Mức độ ưu tiên:" 
+                                         Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Cao:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding HighPriorityTasks}" Grid.Column="1"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Trung bình:" Grid.Column="0"/>
+                                    <TextBlock Text="{Binding MediumPriorityTasks}" Grid.Column="1"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
                     </materialDesign:Card>
                 </WrapPanel>
 
-                <!-- Recent Activities -->
-                <materialDesign:Card Grid.Row="1"
-                                     Margin="0,0,0,20">
-                    <StackPanel Margin="16">
-                        <TextBlock Text="Hoạt động gần đây"
-                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                   Margin="0,0,0,16" />
-
-                        <ListView ItemsSource="{Binding RecentActivities}"
-                                  MaxHeight="300">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <materialDesign:PackIcon Grid.Column="0"
-                                                                 Kind="{Binding Icon}"
-                                                                 Width="24"
-                                                                 Height="24"
-                                                                 Margin="0,0,16,0" />
-
-                                        <StackPanel Grid.Column="1">
-                                            <TextBlock Text="{Binding Description}"
-                                                       Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                            <TextBlock Text="{Binding Time}"
-                                                       Style="{StaticResource MaterialDesignCaptionTextBlock}" />
-                                        </StackPanel>
-
-                                        <Button Grid.Column="2"
-                                                Style="{StaticResource MaterialDesignFlatButton}"
-                                                Command="{Binding ViewDetailsCommand}"
-                                                Content="Xem chi tiết" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </StackPanel>
-                </materialDesign:Card>
-
-                <!-- Calendar and Announcements -->
-                <Grid Grid.Row="2">
+                <!-- Tasks and Calendar Grid -->
+                <Grid Grid.Row="2" Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Tasks List -->
+                    <materialDesign:Card Grid.Column="0" Margin="0,0,10,0" Padding="16">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                                <Button DockPanel.Dock="Right" Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Command="{Binding AddTaskCommand}">
+                                    <materialDesign:PackIcon Kind="Plus"/>
+                                </Button>
+                                <TextBlock Text="Công việc cần làm" 
+                                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                            </DockPanel>
+
+                            <ListView ItemsSource="{Binding Tasks}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <CheckBox Grid.Column="0" IsChecked="{Binding IsCompleted}"
+                                                     Style="{StaticResource MaterialDesignCheckBox}"/>
+
+                                            <StackPanel Grid.Column="1" Margin="16,0">
+                                                <TextBlock Text="{Binding Title}"
+                                                         Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                                                <TextBlock Text="{Binding DueDate}"
+                                                         Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                            </StackPanel>
+
+                                            <materialDesign:PackIcon Grid.Column="2" Kind="FlagOutline"
+                                                                   Foreground="{Binding PriorityColor}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </DockPanel>
+                    </materialDesign:Card>
+
                     <!-- Calendar -->
-                    <materialDesign:Card Grid.Column="0"
-                                         Margin="0,0,10,0">
-                        <Calendar Style="{StaticResource MaterialDesignCalendarPortrait}" />
+                    <materialDesign:Card Grid.Column="1" Margin="10,0,0,0" Padding="16">
+                        <DockPanel>
+                            <TextBlock Text="Lịch" DockPanel.Dock="Top"
+                                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                     Margin="0,0,0,16"/>
+                            
+                            <Calendar Style="{StaticResource MaterialDesignCalendarPortrait}"/>
+                        </DockPanel>
+                    </materialDesign:Card>
+                </Grid>
+
+                <!-- Recent Activities and Announcements -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Recent Activities -->
+                    <materialDesign:Card Grid.Column="0" Margin="0,0,10,0" Padding="16">
+                        <DockPanel>
+                            <TextBlock Text="Hoạt động gần đây" DockPanel.Dock="Top"
+                                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                     Margin="0,0,0,16"/>
+
+                            <ListView ItemsSource="{Binding RecentActivities}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <materialDesign:PackIcon Grid.Column="0"
+                                                                   Kind="{Binding Icon}"
+                                                                   Width="24"
+                                                                   Height="24"
+                                                                   Margin="0,0,16,0"
+                                                                   VerticalAlignment="Center"/>
+
+                                            <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                                                <TextBlock Text="{Binding Description}"
+                                                         Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding Time}"
+                                                             Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                    <TextBlock Text=" • "
+                                                             Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                    <TextBlock Text="{Binding Category}"
+                                                             Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="2"
+                                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                                    Command="{Binding ViewDetailsCommand}"
+                                                    Content="Chi tiết"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </DockPanel>
                     </materialDesign:Card>
 
                     <!-- Announcements -->
-                    <materialDesign:Card Grid.Column="1"
-                                         Margin="10,0,0,0">
-                        <StackPanel Margin="16">
-                            <TextBlock Text="Thông báo"
-                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                       Margin="0,0,0,16" />
+                    <materialDesign:Card Grid.Column="1" Margin="10,0,0,0" Padding="16">
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                                <Button DockPanel.Dock="Right" 
+                                        Style="{StaticResource MaterialDesignToolButton}"
+                                        Command="{Binding ViewAllAnnouncementsCommand}">
+                                    <TextBlock Text="Xem tất cả"/>
+                                </Button>
+                                <TextBlock Text="Thông báo"
+                                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                            </DockPanel>
 
-                            <ItemsControl ItemsSource="{Binding Announcements}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <materialDesign:Card Margin="0,0,0,8"
-                                                             UniformCornerRadius="4">
-                                            <StackPanel Margin="8">
-                                                <TextBlock Text="{Binding Title}"
-                                                           Style="{StaticResource MaterialDesignSubtitle2TextBlock}" />
-                                                <TextBlock Text="{Binding Content}"
-                                                           TextWrapping="Wrap"
-                                                           Style="{StaticResource MaterialDesignBody2TextBlock}"
-                                                           Margin="0,4" />
-                                                <TextBlock Text="{Binding Date}"
-                                                           Style="{StaticResource MaterialDesignCaptionTextBlock}" />
-                                            </StackPanel>
-                                        </materialDesign:Card>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Announcements}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <materialDesign:Card Margin="0,0,0,8"
+                                                               UniformCornerRadius="4"
+                                                               Background="{Binding IsNew, Converter={StaticResource NewItemBackgroundConverter}}">
+                                                <Grid Margin="16">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <DockPanel Grid.Row="0">
+                                                        <materialDesign:PackIcon Kind="{Binding Icon}"
+                                                                               Width="20"
+                                                                               Height="20"
+                                                                               Margin="0,0,8,0"
+                                                                               VerticalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding Title}"
+                                                                 Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>
+                                                    </DockPanel>
+
+                                                    <TextBlock Grid.Row="1"
+                                                             Text="{Binding Content}"
+                                                             TextWrapping="Wrap"
+                                                             Style="{StaticResource MaterialDesignBody2TextBlock}"
+                                                             Margin="0,8"/>
+
+                                                    <StackPanel Grid.Row="2" 
+                                                              Orientation="Horizontal"
+                                                              HorizontalAlignment="Center">
+                                                        <TextBlock Text="{Binding Date}"
+                                                                 Style="{StaticResource MaterialDesignCaptionTextBlock}"/>
+                                                        
+                                                        <materialDesign:Chip Content="{Binding Type}"
+                                                                           Margin="8,0,0,0"
+                                                                           Background="{Binding Type, Converter={StaticResource AnnouncementTypeColorConverter}}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </materialDesign:Card>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </DockPanel>
                     </materialDesign:Card>
                 </Grid>
             </Grid>
         </ScrollViewer>
+
+        <!-- Floating Action Button for Quick Actions -->
+        <Button Style="{StaticResource MaterialDesignFloatingActionButton}"
+                materialDesign:ShadowAssist.ShadowAnimationDuration="300"
+                Command="{Binding ShowQuickActionsCommand}"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Margin="0,0,24,24"
+                Grid.Row="1">
+            <materialDesign:PackIcon Kind="Plus" Height="24" Width="24"/>
+        </Button>
     </Grid>
 </Page>

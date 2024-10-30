@@ -77,6 +77,7 @@
                               ItemsSource="{Binding Departments}"
                               SelectedItem="{Binding SelectedDepartment}"
                               materialDesign:HintAssist.Hint="Department"
+                              DisplayMemberPath="Name"
                               Style="{StaticResource MaterialDesignOutlinedComboBox}"
                               Margin="0,0,8,0"/>
 
@@ -221,9 +222,14 @@
                         </DataGridTemplateColumn>
                         
                         <DataGridTextColumn Header="ID" Binding="{Binding EmployeeCode}" Width="Auto"/>
-                        <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*"/>
-                        <DataGridTextColumn Header="Department" Binding="{Binding Department.Name}" Width="*"/>
-                        <DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="Auto"/>
+                        <DataGridTextColumn Header="Department" Binding="{Binding Department.Name}" Width="Auto"/>
+                        <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="Auto"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="Auto"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="Auto"/>
+                        <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="Auto"/>
+                        <DataGridTextColumn Header="Basic Salary" Binding="{Binding BasicSalary}" Width="Auto"/>
+                        <!-- <DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/> -->
                         <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="Auto"/>
                         <DataGridTextColumn Header="Start Date" Binding="{Binding HireDate, StringFormat=d}" Width="Auto"/>
                         
