@@ -1,12 +1,9 @@
 ﻿using HRM.Models;
-using HRM.Repositories;
-using HRM.Service.ServiceImpl;
 
-namespace HRM.Service;
+namespace HRM.Repositories;
 
-public interface IAttendanceService : IBaseService<Attendance>
+public interface IAttendanceRepository : IBaseRepository<Attendance>
 {
-    
     Task<IEnumerable<Attendance>> GetAttendancesByDateAsync(DateTime? date, int employeeId);
     Task<Attendance> CheckInAsync(int employeeId);
     Task<Attendance> CheckOutAsync(int employeeId);

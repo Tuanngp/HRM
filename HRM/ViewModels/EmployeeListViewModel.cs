@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,79 +11,113 @@ using HRM.Repositories;
 using HRM.Repositories.RepositoryImpl;
 using HRM.Service.ServiceImpl;
 using HRM.Views;
-using Microsoft.EntityFrameworkCore;
 
 namespace HRM.ViewModels;
 
 public partial class EmployeeListViewModel : ObservableObject
 {
-    [ObservableProperty] private string searchText;
-    [ObservableProperty] private Department selectedDepartment;
-    [ObservableProperty] private string selectedGender;
-    [ObservableProperty] private string selectedSalaryRange;
+    [ObservableProperty] private string? searchText;
+    [ObservableProperty] private Department? selectedDepartment;
+    [ObservableProperty] private string? selectedGender;
+    [ObservableProperty] private string? selectedSalaryRange;
     [ObservableProperty] private DateTime? startDate;
     [ObservableProperty] private DateTime? endDate;
     [ObservableProperty] private bool isAdmin;
+    
+    [ObservableProperty] private int totalEmployees;
+    [ObservableProperty] private int activeEmployees;
+    [ObservableProperty] private int employeesOnLeave;
+    [ObservableProperty] private int newEmployees;
+    
+    [ObservableProperty] private int selectedPageSize;
+    [ObservableProperty] private int currentPage;
+    [ObservableProperty] private int totalPages;
+    
 
-    private IEmployeeService _employeeService;
-    private IDepartmentRepository _departmentRepository;
+    private readonly IEmployeeService _employeeService;
+    private readonly IDepartmentRepository _departmentRepository;
 
+    [ObservableProperty] public ObservableCollection<int> pageSizes;
     public ObservableCollection<Employee?> Employees { get; set; }
     public ObservableCollection<Department?> Departments { get; set; }
     public ObservableCollection<Gender> Genders { get; }
     public ObservableCollection<string> SalaryRanges { get; }
 
-    public ICommand SearchCommand { get; }
-    public ICommand AddEmployeeCommand { get; }
-    public ICommand ApplyFiltersCommand { get; }
-    public ICommand ViewEmployeeCommand { get; }
-    public ICommand EditEmployeeCommand { get; }
-    public ICommand DeleteEmployeeCommand { get; }
-
     public EmployeeListViewModel()
     {
-        // Initialize collections and commands
         Employees = new ObservableCollection<Employee?>();
-        Departments = new ObservableCollection<Department?>();
+        Departments = new ObservableCollection<Department?>
+        {
+            new Department { Id = 0, Name = "All" }
+        };
         Genders = new ObservableCollection<Gender> { Gender.Male , Gender.Female, Gender.Other};
-        SalaryRanges = new ObservableCollection<string> { "< 5,000", "5,000 - 10,000", "> 10,000" };
-
-        // Initialize commands
-        SearchCommand = new RelayCommand(OnSearch);
-        AddEmployeeCommand = new RelayCommand(OnAddEmployee);
-        ApplyFiltersCommand = new RelayCommand(OnApplyFilters);
-        ViewEmployeeCommand = new RelayCommand<Employee>(OnViewEmployee);
-        EditEmployeeCommand = new RelayCommand<Employee>(OnEditEmployee, CanEditOrDelete);
-        DeleteEmployeeCommand = new RelayCommand<Employee>(OnDeleteEmployee, CanEditOrDelete);
+        SalaryRanges = new ObservableCollection<string> { "< 5,000,000", "5,000,000 - 10,000,000", "> 10,000,000" };
+        PageSizes = new ObservableCollection<int> { 10, 30, 50, 100 };
 
         _employeeService = new EmployeeService();
         _departmentRepository = new DepartmentRepository(new HrmContext());
         
-        IsAdmin = UserSession.Instance.User.Role == "Admin";
-        LoadData();
+        IsAdmin = UserSession.Instance.User!.Role == "Admin";
+        _ = LoadData();
     }
 
-    private async void LoadData()
+    private async Task LoadData()
+    {
+        await LoadEmployees();
+        await LoadDepartments();
+        var employees = await _employeeService.GetAllEmployees();
+        var empList = employees.ToList();
+        
+        TotalEmployees = empList.Count();
+        ActiveEmployees = empList.Count(e => e!.Status == EmployeeStatus.Active);
+        EmployeesOnLeave = empList.Count(e => e!.Status == EmployeeStatus.OnLeave);
+        NewEmployees = empList.Count(e => e!.HireDate.Year == DateTime.Now.Year && e.HireDate.Month == DateTime.Now.Month);
+        
+        CurrentPage = 1;
+        TotalPages = (int)Math.Ceiling((double)Employees.Count / SelectedPageSize);
+    }
+
+    private async Task LoadEmployees()
     {
         var employees = await _employeeService.GetAllEmployees();
-        var departments = await _departmentRepository.GetAllAsync();
         Employees.Clear();
-        Departments.Clear();
         foreach (var e in employees)
         {
             Employees.Add(e);
         }
+    }
 
+    private async Task LoadDepartments()
+    {
+        var departments = await _departmentRepository.GetAllAsync();
         foreach (var d in departments)
         {
             Departments.Add(d);
         }
     }
-
-    private async void OnSearch()
+    
+    [RelayCommand]
+    private void PreviousPage()
     {
+        CurrentPage--;
+    }  
+    
+    [RelayCommand]
+    private void NextPage()
+    {
+        CurrentPage++;
+    }
+
+    [RelayCommand]
+    private async Task Search()
+    {
+        if (string.IsNullOrEmpty(SearchText) && SelectedDepartment==null && !StartDate.HasValue && !EndDate.HasValue)
+        {
+            await LoadEmployees();
+            return;
+        }
         var searchResult = await _employeeService
-            .SearchEmployeesAsync(SearchText, SelectedDepartment.Id, StartDate, EndDate);
+            .SearchEmployeesAsync(SearchText, SelectedDepartment?.Id, StartDate, EndDate);
         Employees.Clear();
         foreach (var s in searchResult)
         {
@@ -90,11 +125,13 @@ public partial class EmployeeListViewModel : ObservableObject
         }
     }
 
-    private void OnAddEmployee()
+    [RelayCommand]
+    private void AddEmployee()
     {
     }
 
-    private async void OnApplyFilters()
+    [RelayCommand]
+    private async Task ApplyFilters()
     {
         var filteredEmployees = await _employeeService.FilterEmployeesAsync(SelectedGender, IsWithinSalaryRange(), StartDate, EndDate);
         Employees.Clear();
@@ -103,7 +140,42 @@ public partial class EmployeeListViewModel : ObservableObject
             Employees.Add(e);
         }
     }
+    
+    [RelayCommand]
+    private void ViewEmployee(Employee? employee)
+    {
+        OpenEmployeeDetailView(employee!.Id);
+    }
 
+    [RelayCommand]
+    private void EditEmployee(Employee? employee)
+    {
+        OpenEmployeeDetailView(employee!.Id);
+    }
+    
+    [RelayCommand]
+    private void DeleteEmployee(Employee? employee)
+    {
+        var result = MessageBox.Show("Are you sure you want to delete this employee?", "Delete Employee", MessageBoxButton.YesNo);
+        if (result == MessageBoxResult.Yes)
+        {
+            _employeeService.DeleteEmployeeAsync(employee!.Id);
+            Employees.Remove(employee);
+            MessageBox.Show("Deleted successfully", "Delete Employee", MessageBoxButton.OK);
+        }
+    }
+    
+    [RelayCommand]
+    private async Task ExportToExcel()
+    {
+        System.Windows.Forms.MessageBox.Show("Exporting to Excel...");
+        var exceData = await _employeeService.ExportToExcelAsync(Employees);
+        var filePath = "employees.xlsx";
+        System.Windows.Forms.MessageBox.Show($"Exported to {filePath}");
+        await SaveExcelFileAsync(exceData, filePath);
+        OpenExcelFile(filePath);
+    }
+    
     private string IsWithinSalaryRange()
     {
         if (SelectedSalaryRange == "< 5,000,000")
@@ -114,16 +186,6 @@ public partial class EmployeeListViewModel : ObservableObject
             return "10000001-1000000000";
         return "";
     }
-    
-    private void OnViewEmployee(Employee employee)
-    {
-        OpenEmployeeDetailView(employee.Id);
-    }
-
-    private void OnEditEmployee(Employee employee)
-    {
-        OpenEmployeeDetailView(employee.Id);
-    }
 
     private void OpenEmployeeDetailView(int employeeId)
     {
@@ -132,25 +194,26 @@ public partial class EmployeeListViewModel : ObservableObject
         employeeDetailView.Show();
     }
 
-    private void EmployeeDetailView_Closed(object sender, EventArgs e)
+    private void EmployeeDetailView_Closed(object? sender, EventArgs e)
     {
-        ((EmployeeDetailView)sender).Closed -= EmployeeDetailView_Closed;
-        LoadData();
+        ((EmployeeDetailView)sender!).Closed -= EmployeeDetailView_Closed;
+        _ = LoadData();
     }
-
-    private void OnDeleteEmployee(Employee employee)
+    
+    public async Task SaveExcelFileAsync(byte[] excelData, string filePath)
     {
-        var result = MessageBox.Show("Are you sure you want to delete this employee?", "Delete Employee", MessageBoxButton.YesNo);
-        if (result == MessageBoxResult.Yes)
+        await File.WriteAllBytesAsync(filePath, excelData);
+    }
+    
+    public void OpenExcelFile(string filePath)
+    {
+        var process = new Process
         {
-            _employeeService.DeleteEmployeeAsync(employee.Id);
-            Employees.Remove(employee);
-            MessageBox.Show("Deleted successfully", "Delete Employee", MessageBoxButton.OK);
-        }
-    }
-
-    private bool CanEditOrDelete(Employee employee)
-    {
-        return IsAdmin;
+            StartInfo = new ProcessStartInfo(filePath)
+            {
+                UseShellExecute = true
+            }
+        };
+        process.Start();
     }
 }

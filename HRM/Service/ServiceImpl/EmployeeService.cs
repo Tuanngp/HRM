@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using HRM.Models;
 using HRM.Models.Enum;
@@ -113,17 +114,12 @@ public class EmployeeService : IEmployeeService
         await _employeeRepository.DeleteAsync(id);
     }
 
-    public Task<IEnumerable<Employee>> SearchEmployeesAsync(string searchTerm, 
+    public Task<IEnumerable<Employee>> SearchEmployeesAsync(string? searchTerm, 
         int? departmentId, 
         DateTime? startDate, 
         DateTime? endDate)
     {
         return _employeeRepository.SearchEmployeesAsync( searchTerm, departmentId, startDate, endDate);
-    }
-    
-    public Task<byte[]> ExportToExcelAsync(Employee criteria)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<bool> UpdateEmployeeStatusAsync(int id, EmployeeStatus status)
@@ -139,7 +135,7 @@ public class EmployeeService : IEmployeeService
         return true;
     }
 
-    public async Task<IEnumerable<Employee?>> FilterEmployeesAsync(string selectedGender, string selectedSalaryRange, DateTime? startDate, DateTime? endDate)
+    public async Task<IEnumerable<Employee?>> FilterEmployeesAsync(string? selectedGender, string selectedSalaryRange, DateTime? startDate, DateTime? endDate)
     {
         var query = _employeeRepository.GetQueryable();
 
@@ -200,10 +196,11 @@ public class EmployeeService : IEmployeeService
         }
     }
     
-    public async Task<byte[]> ExportToExcelAsync(IEnumerable<Employee> employees)
+    public async Task<byte[]> ExportToExcelAsync(ObservableCollection<Employee?> employees)
     {
         try
         {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using var package = new ExcelPackage();
             var worksheet = package.Workbook.Worksheets.Add("Employees");
     
@@ -213,9 +210,11 @@ public class EmployeeService : IEmployeeService
                 "Employee Code",
                 "Full Name",
                 "Department",
-                "Position",
-                "Start Date",
+                "Phone",
+                "Email",
                 "Basic Salary",
+                "Date of Birth",
+                "Hired Date",
                 "Status"
             };
     
@@ -237,8 +236,7 @@ public class EmployeeService : IEmployeeService
                 worksheet.Cells[row, 6].Value = employee.BasicSalary;
                 worksheet.Cells[row, 7].Value = employee.DateOfBirth;
                 worksheet.Cells[row, 8].Value = employee.HireDate;
-                worksheet.Cells[row, 9].Value = employee.BasicSalary;
-                worksheet.Cells[row, 10].Value = employee.Status;
+                worksheet.Cells[row, 9].Value = employee.Status;
                 row++;
             }
     

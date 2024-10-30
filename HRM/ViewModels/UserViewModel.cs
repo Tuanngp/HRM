@@ -79,17 +79,18 @@ public partial class UserViewModel : ObservableObject
 
     }
 
-    private void LoadUserData()
+    private async Task LoadUserData()
     {
         try
         {
-            var emp = UserSession.Instance.Employee;
-            UserName = emp.FullName;
-            UserPosition = "Software Developer";
-            UserAvatar = emp.PhotoPath;
             var user = UserSession.Instance.User;
             NotificationCount = user!.NotificationReceiverUsers.Count;
             CheckInStatus = "Not checked in";
+            var emp = await UserSession.Instance.GetEmployee();
+            UserName = emp.FullName;
+            UserPosition = "Software Developer";
+            UserAvatar = emp.PhotoPath;
+            
         }
         catch (Exception ex)
         {

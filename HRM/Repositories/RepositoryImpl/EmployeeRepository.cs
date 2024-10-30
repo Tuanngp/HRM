@@ -25,7 +25,7 @@ public class EmployeeRepository(HrmContext context) : BaseRepository<Employee>(c
 	}
 
 	public async Task<IEnumerable<Employee>> SearchEmployeesAsync(
-		string searchTerm,
+		string? searchTerm,
 		int? departmentId,
 		DateTime? startDate,
 		DateTime? endDate)
@@ -35,12 +35,15 @@ public class EmployeeRepository(HrmContext context) : BaseRepository<Employee>(c
 		if (!string.IsNullOrEmpty(searchTerm))
 		{
 			query = query.Where(e =>
-				e.FirstName.Contains(searchTerm) ||
-				e.LastName.Contains(searchTerm) ||
+				e.FullName.Contains(searchTerm) ||
+				e.EmployeeCode.Contains(searchTerm) ||
+				e.Phone!.Contains(searchTerm) ||
+				e.Address!.Contains(searchTerm) ||
+				e.Gender.ToString().Contains(searchTerm) ||
 				e.Email.Contains(searchTerm));
 		}
 
-		if (departmentId.HasValue)
+		if (departmentId.HasValue && departmentId != 0)
 		{
 			query = query.Where(e => e.DepartmentId == departmentId);
 		}

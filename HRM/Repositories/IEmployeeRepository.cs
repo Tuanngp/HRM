@@ -6,7 +6,7 @@ public interface IEmployeeRepository: IBaseRepository<Employee>
 {
     Task<IEnumerable<Employee>> GetEmployeesByDepartmentAsync(int departmentId);
     Task<IEnumerable<Employee>> SearchEmployeesAsync(
-        string searchTerm, 
+        string? searchTerm, 
         int? departmentId, 
         DateTime? startDate, 
         DateTime? endDate);

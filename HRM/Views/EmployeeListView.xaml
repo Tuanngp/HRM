@@ -79,14 +79,16 @@
                               materialDesign:HintAssist.Hint="Department"
                               DisplayMemberPath="Name"
                               Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                              Margin="0,0,8,0"/>
+                              
+                              Margin="0,0,8,0">
+                    </ComboBox>
 
-                    <ComboBox Width="150" 
-                              ItemsSource="{Binding EmploymentTypes}"
-                              SelectedItem="{Binding SelectedEmploymentType}"
-                              materialDesign:HintAssist.Hint="Employment Type"
-                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                              Margin="0,0,8,0"/>
+                    <!-- <ComboBox Width="150"  -->
+                    <!--           ItemsSource="{Binding EmploymentTypes}" -->
+                    <!--           SelectedItem="{Binding SelectedEmploymentType}" -->
+                    <!--           materialDesign:HintAssist.Hint="Employment Type" -->
+                    <!--           Style="{StaticResource MaterialDesignOutlinedComboBox}" -->
+                    <!--           Margin="0,0,8,0"/> -->
 
                     <Button Command="{Binding SearchCommand}"
                             Style="{StaticResource MaterialDesignOutlinedButton}">
@@ -114,9 +116,9 @@
                                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                       Margin="0,0,0,8"/>
 
-                            <ComboBox ItemsSource="{Binding Skills}"
-                                      SelectedItem="{Binding SelectedSkill}"
-                                      materialDesign:HintAssist.Hint="Skills"
+                            <ComboBox ItemsSource="{Binding Genders}"
+                                      SelectedItem="{Binding SelectedGender}"
+                                      materialDesign:HintAssist.Hint="Gender"
                                       Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
                         </StackPanel>
 
@@ -125,11 +127,10 @@
                                        SelectedDate="{Binding StartDate}"
                                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                                        Margin="0,0,0,8"/>
-
-                            <ComboBox ItemsSource="{Binding PerformanceRatings}"
-                                      SelectedItem="{Binding SelectedPerformanceRating}"
-                                      materialDesign:HintAssist.Hint="Performance Rating"
-                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                            <!-- <ComboBox ItemsSource="{Binding PerformanceRatings}" -->
+                            <!--           SelectedItem="{Binding SelectedPerformanceRating}" -->
+                            <!--           materialDesign:HintAssist.Hint="Performance Rating" -->
+                            <!--           Style="{StaticResource MaterialDesignOutlinedComboBox}"/> -->
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" Margin="0,0,8,0">
@@ -138,10 +139,10 @@
                                        Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                                        Margin="0,0,0,8"/>
 
-                            <ComboBox ItemsSource="{Binding ContractTypes}"
-                                      SelectedItem="{Binding SelectedContractType}"
-                                      materialDesign:HintAssist.Hint="Contract Type"
-                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                            <!-- <ComboBox ItemsSource="{Binding ContractTypes}" -->
+                            <!--           SelectedItem="{Binding SelectedContractType}" -->
+                            <!--           materialDesign:HintAssist.Hint="Contract Type" -->
+                            <!--           Style="{StaticResource MaterialDesignOutlinedComboBox}"/> -->
                         </StackPanel>
 
                         <Button Grid.Column="3" 

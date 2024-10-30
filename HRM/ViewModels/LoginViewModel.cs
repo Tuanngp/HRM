@@ -40,7 +40,7 @@ public partial class LoginViewModel : ObservableValidator
             var result = await _authService.LoginAsync(Username, Password);
             if (result != null)
             {
-                UserSession.Instance.SetUser(result);
+                await UserSession.Instance.SetUser(result);
                 switch (result.Role)
                 {
                     case "Admin":
