@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d"
-      Title="UserInfoView" Height="450" Width="800">
+      Title="UserInfoView" Height="Auto" Width="Auto">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -397,7 +397,7 @@
                                     <!-- Change Password Button -->
                                     <Button Style="{StaticResource MaterialDesignRaisedButton}"
                                             Command="{Binding ChangePasswordCommand}"
-                                            CommandParameter="{Binding ElementName=CurrentPassword}"
+                                            CommandParameter="{Binding ElementName=NewPassword}"
                                             HorizontalAlignment="Right">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="Lock" Margin="0,0,8,0" />

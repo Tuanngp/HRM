@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HRM.Models;
 
-namespace HRM.ViewModels.Admin
+namespace HRM.ViewModels
 {
     partial class AdminDashBoardViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private int totalEmployees;
-        
-        [ObservableProperty]
-        private int totalDepartments;
+        [ObservableProperty] private int totalEmployees;
 
-        [ObservableProperty]
-        private int newEmployees;
+        [ObservableProperty] private int totalDepartments;
+
+        [ObservableProperty] private int newEmployees;
 
 
         // Quick Action Commands
@@ -43,12 +34,12 @@ namespace HRM.ViewModels.Admin
             PayrollManagementCommand = new RelayCommand(PayrollManagement);
 
             // Initialize Recent Activities
-            RecentActivities = new ObservableCollection<ActivityLog>
-            {
+            RecentActivities =
+            [
                 new ActivityLog { Action = "Added new employee John Doe", CreatedDate = DateTime.Now.AddDays(-1) },
                 new ActivityLog { Action = "Updated department HR", CreatedDate = DateTime.Now.AddDays(-2) },
                 new ActivityLog { Action = "Processed payroll for March", CreatedDate = DateTime.Now.AddDays(-3) }
-            };
+            ];
         }
 
         // Command Methods

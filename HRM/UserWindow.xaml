@@ -58,13 +58,13 @@
                         </MenuItem.HeaderTemplate>
                     </MenuItem>
 
-                    <MenuItem Header="Thông tin cá nhân"
-                             Command="{Binding NavigateCommand}"
-                             CommandParameter="Profile">
-                        <MenuItem.Icon>
-                            <materialDesign:PackIcon Kind="AccountDetails"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <!-- <MenuItem Header="Thông tin cá nhân" -->
+                    <!--          Command="{Binding NavigateCommand}" -->
+                    <!--          CommandParameter="Profile"> -->
+                    <!--     <MenuItem.Icon> -->
+                    <!--         <materialDesign:PackIcon Kind="AccountDetails"/> -->
+                    <!--     </MenuItem.Icon> -->
+                    <!-- </MenuItem> -->
 
                     <MenuItem Header="Lịch làm việc"
                              Command="{Binding NavigateCommand}"
@@ -89,14 +89,13 @@
                             <materialDesign:PackIcon Kind="CashMultiple"/>
                         </MenuItem.Icon>
                     </MenuItem>
-
-                    <MenuItem Header="Báo cáo"
-                             Command="{Binding NavigateCommand}"
-                             CommandParameter="Reports">
-                        <MenuItem.Icon>
-                            <materialDesign:PackIcon Kind="FileDocument"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <!-- <MenuItem Header="Báo cáo" -->
+                    <!--          Command="{Binding NavigateCommand}" -->
+                    <!--          CommandParameter="Reports"> -->
+                    <!--     <MenuItem.Icon> -->
+                    <!--         <materialDesign:PackIcon Kind="FileDocument"/> -->
+                    <!--     </MenuItem.Icon> -->
+                    <!-- </MenuItem> -->
                 </Menu>
 
                 <!-- User Profile & Notifications -->

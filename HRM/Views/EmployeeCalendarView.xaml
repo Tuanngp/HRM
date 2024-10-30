@@ -1,0 +1,181 @@
+﻿<Page x:Class="HRM.Views.EmployeeCalendarView"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Employee Management System" Height="Auto" Width="Auto"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Sidebar -->
+        <Grid Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}">
+            <StackPanel>
+                <!-- User Profile Section -->
+                <Border Padding="20" BorderBrush="{StaticResource MaterialDesignShadowBrush}" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <Ellipse Width="80" Height="80">
+                            <Ellipse.Fill>
+                                <ImageBrush x:Name="UserAvatar" ImageSource="/Assets/avatar/default.jpg"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock x:Name="UserName" Text="Nguyen Van A" 
+                                 HorizontalAlignment="Center" Margin="0,10,0,5"/>
+                        <TextBlock x:Name="UserRole" Text="Nhân viên" 
+                                 HorizontalAlignment="Center" Opacity="0.7"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Navigation Menu -->
+                <ListView Margin="0,20,0,0" SelectedIndex="0">
+                    <ListViewItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Calendar" Margin="0,0,15,0"/>
+                            <TextBlock Text="Lịch làm việc"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ClockIn" Margin="0,0,15,0"/>
+                            <TextBlock Text="Chấm công"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Calendar" Margin="0,0,15,0"/>
+                            <TextBlock Text="Đơn xin nghỉ phép"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CurrencyUsd" Margin="0,0,15,0"/>
+                            <TextBlock Text="Lương thưởng"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+            </StackPanel>
+
+            <!-- Logout Button -->
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="20"
+                    VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Logout" Margin="0,0,15,0"/>
+                    <TextBlock Text="Đăng xuất"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Calendar Header -->
+                <StackPanel>
+                    <TextBlock Text="Lịch làm việc" 
+                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"/>
+                    <TextBlock Text="Tháng 10, 2024" 
+                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                             Opacity="0.7"/>
+                </StackPanel>
+
+                <!-- Quick Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Download" Margin="0,0,5,0"/>
+                            <TextBlock Text="Xuất lịch"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignOutlinedButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Printer" Margin="0,0,5,0"/>
+                            <TextBlock Text="In lịch"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Calendar View -->
+            <Calendar Grid.Row="1" Margin="0,20,0,0"
+                      materialDesign:CalendarAssist.IsHeaderVisible="True">
+                <Calendar.Resources>
+                    <Style TargetType="CalendarDayButton">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="15">
+                                <Setter Property="Background" Value="#E3F2FD"/>
+                                <Setter Property="ToolTip" Value="Họp phòng ban"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content}" Value="20">
+                                <Setter Property="Background" Value="#FFEBEE"/>
+                                <Setter Property="ToolTip" Value="Nghỉ phép"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Calendar.Resources>
+            </Calendar>
+
+            <!-- Event Details Card -->
+            <materialDesign:Card Grid.Row="1" 
+                                Margin="20,20,0,0"
+                                Padding="20"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Right"
+                                Width="300">
+                <StackPanel>
+                    <TextBlock Text="Chi tiết sự kiện" 
+                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                             Margin="0,0,0,20"/>
+
+                    <ItemsControl>
+                        <ItemsControl.Items>
+                            <!-- Event Item -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="Họp phòng ban" FontWeight="Bold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <materialDesign:PackIcon Kind="Clock" Margin="0,0,5,0"/>
+                                    <TextBlock Text="09:00 - 10:30"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <materialDesign:PackIcon Kind="MapMarker" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Phòng họp A"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Another Event Item -->
+                            <StackPanel>
+                                <TextBlock Text="Đào tạo nội bộ" FontWeight="Bold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <materialDesign:PackIcon Kind="Clock" Margin="0,0,5,0"/>
+                                    <TextBlock Text="14:00 - 16:00"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                    <materialDesign:PackIcon Kind="MapMarker" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Phòng đào tạo"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ItemsControl.Items>
+                    </ItemsControl>
+                </StackPanel>
+            </materialDesign:Card>
+        </Grid>
+    </Grid>
+</Page>

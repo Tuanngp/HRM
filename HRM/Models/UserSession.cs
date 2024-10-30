@@ -2,15 +2,20 @@
 
 public class UserSession
 {
-    private static UserSession _instance;
+    private static UserSession? _instance;
     public static UserSession Instance => _instance ??= new UserSession();
 
-    public User User { get; private set; }
+    public User? User { get; private set; }
 
     private UserSession() { }
 
-    public void SetUser(User user)
+    public void SetUser(User? user)
     {
         User = user;
-    }  
+    }
+
+    public void Clear()
+    {
+        User = null;
+    }
 }

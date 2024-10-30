@@ -1,16 +1,16 @@
-﻿<Page x:Class="HRM.Views.Admin.AdminDashboard"
+﻿<Page x:Class="HRM.Views.AdminDashboard"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      xmlns:admin="clr-namespace:HRM.ViewModels.Admin"
+      xmlns:viewModels="clr-namespace:HRM.ViewModels"
       mc:Ignorable="d"
       Height="Auto" Width="Auto"
       Title="AdminDashboard">
 
     <Page.DataContext>
-        <admin:AdminDashBoardViewModel />
+        <viewModels:AdminDashBoardViewModel />
     </Page.DataContext>
 
     <ScrollViewer>
