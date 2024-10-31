@@ -4,7 +4,7 @@ using HRM.Service.ServiceImpl;
 
 namespace HRM.Service;
 
-public interface IAttendanceService : IBaseService<Attendance>
+public interface IAttendanceService : IBaseRepository<Attendance>
 {
     
     Task<IEnumerable<Attendance>> GetAttendancesByDateAsync(DateTime? date, int employeeId);

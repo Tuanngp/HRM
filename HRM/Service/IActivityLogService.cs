@@ -1,6 +1,9 @@
-﻿namespace HRM.Service;
+﻿using HRM.Models;
+using HRM.Repositories;
+using HRM.Service.ServiceImpl;
 
-public interface IActivityLogService
+namespace HRM.Service;
+
+public interface IActivityLogService : IBaseRepository<ActivityLog>
 {
-    Task LogActivityAsync(string employeeCreated, string s);
 }

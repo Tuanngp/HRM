@@ -7,13 +7,8 @@ namespace HRM.Service.ServiceImpl;
 
 public class DepartmentService : IDepartmentService
 {
-    private IDepartmentRepository _departmentRepository;
-    
-    public DepartmentService()
-    {
-        _departmentRepository = new DepartmentRepository(new HrmContext());
-    }
-    
+    private readonly IDepartmentRepository _departmentRepository = new DepartmentRepository(new HrmContext());
+
     public Task<ObservableCollection<Employee>> GetEmployeesByDepartmentAsync(int departmentId)
     {
         throw new NotImplementedException();

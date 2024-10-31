@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,30 +9,23 @@ using HRM.Views;
 
 namespace HRM.ViewModels;
 
-public partial class LoginViewModel : ObservableValidator
+public partial class LoginViewModel(LoginView loginView) : ObservableObject
 {
-    private LoginView _loginView;
-    private readonly IAuthService _authService;
+    private readonly IAuthService _authService = new AuthService();
 
-    [ObservableProperty] [Required(ErrorMessage = "Username is required")]
-    private string username;
+    [ObservableProperty] private string username = null!;
 
-    [ObservableProperty] [Required(ErrorMessage = "Password is required")]
-    private string password;
+    [ObservableProperty] private string password = null!;
 
-    [ObservableProperty] private string errorMessage;
+    [ObservableProperty] private string errorMessage = null!;
 
-    public LoginViewModel(LoginView loginView)
+    [RelayCommand]
+    private async Task Login()
     {
-        _loginView = loginView;
-        _authService = new AuthService();
-        LoginCommand = new RelayCommand(ExecuteLogin);
-    }
-
-    public ICommand LoginCommand { get; }
-
-    private async void ExecuteLogin()
-    {
+        if (!ValidationInput())
+        {
+            return;
+        }
         try
         {
             ErrorMessage = string.Empty;
@@ -44,27 +36,42 @@ public partial class LoginViewModel : ObservableValidator
                 switch (result.Role)
                 {
                     case "Admin":
-                        AdminWindow adminWindow = new AdminWindow();
+                        var adminWindow = new AdminWindow();
                         adminWindow.Show();
                         break;
                     case "User":
-                        UserWindow userWindow = new UserWindow();
+                        var userWindow = new UserWindow();
                         userWindow.Show();
                         break;
                     default:
-                        ErrorMessage = "Invalid role";
+                        ErrorMessage = "Vai trò không hợp lệ";
                         break;
                 }
-                _loginView.Close();            
+
+                loginView.Close();
             }
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
+            ErrorMessage = $"Đăng nhập thất bại: {ex.Message}";
         }
     }
 
-    private bool CanExecuteLogin() =>
-        !string.IsNullOrEmpty(Username) &&
-        !string.IsNullOrEmpty(Password);
+    private bool ValidationInput()
+    {
+
+        if (string.IsNullOrEmpty(Username))
+        {
+            ErrorMessage = "Vui lòng nhập tên tài khoản! ";
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(Password))
+        {
+            ErrorMessage = "Vui lòng nhập mật khẩu! ";
+            return false;
+        }
+
+        return true;
+    }
 }

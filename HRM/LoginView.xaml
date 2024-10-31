@@ -15,13 +15,18 @@
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Grid>
         <StackPanel Width="400" VerticalAlignment="Center">
-            <TextBlock Text="Login" 
+            <TextBlock Text="Đăng nhập" 
                        Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,20"/>
-            <TextBox Text="{Binding Username}" Margin="0,5" Padding="5" materialDesign:HintAssist.Hint="Username"/>
-            <PasswordBox x:Name="PasswordBox" Margin="0,5" Padding="5" materialDesign:HintAssist.Hint="Password"/>
-            <Button Content="Login" Command="{Binding LoginCommand}" 
+            <TextBox Text="{Binding Username}" Margin="0,5" Padding="5" 
+                     Style="{StaticResource MaterialDesignTextBox}"
+                     materialDesign:HintAssist.Hint="Tên đăng nhập"/>
+            <PasswordBox x:Name="PasswordBox" 
+                         Margin="0,5" Padding="5" 
+                         materialDesign:HintAssist.Hint="Mật khẩu"
+                         />
+            <Button Content="Đăng nhập" Command="{Binding LoginCommand}" 
                     CommandParameter="{Binding ElementName=PasswordBox}"
                     Margin="0,20,0,0" Padding="10,5"
                     Style="{StaticResource MaterialDesignRaisedButton}" />

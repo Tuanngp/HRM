@@ -1,10 +1,13 @@
 ﻿using HRM.Models;
+using HRM.Models.Enum;
+using HRM.Service.ServiceImpl;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRM.Repositories.RepositoryImpl;
 
 public class AttendanceRepository(HrmContext context) : BaseRepository<Attendance>(context), IAttendanceRepository
 {
+    private IEmployeeService employeeService = new EmployeeService();
     public IQueryable<Attendance?> AddIncludes(IQueryable<Attendance?> query)
     {
         return query.Include(a => a.Employee);
@@ -36,10 +39,13 @@ public class AttendanceRepository(HrmContext context) : BaseRepository<Attendanc
         {
             EmployeeId = employeeId,
             CheckInTime = DateTime.Now,
-            Status = "Present"
+            Status = "Check in"
         };
 
         context.Attendances.Add(attendance);
+        var employee = await employeeService.GetByIdAsync(employeeId);
+        employee!.Status = EmployeeStatus.Active;
+        await employeeService.UpdateEmployeeAsync(employeeId, employee);
         await context.SaveChangesAsync();
         return attendance;
     }
@@ -55,18 +61,21 @@ public class AttendanceRepository(HrmContext context) : BaseRepository<Attendanc
         {
             attendance.CheckOutTime = DateTime.Now;
             attendance.WorkingHours = (decimal)((DateTime)attendance.CheckOutTime - attendance.CheckInTime).TotalHours;
+            attendance.Status = "Done";
+            var employee = await employeeService.GetByIdAsync(employeeId);
+            employee!.Status = EmployeeStatus.Inactive;
+            await employeeService.UpdateEmployeeAsync(employeeId, employee);
             await context.SaveChangesAsync();
         }
 
-        return attendance;
+        return attendance!;
     }
 
     public async Task<bool> HasCheckedInTodayAsync(int employeeId)
     {
         return await context.Attendances
             .AnyAsync(a => a.EmployeeId == employeeId &&
-                           a.CheckInTime.Date == DateTime.Today &&
-                           a.CheckOutTime == null);
+                           a.CheckInTime.Date == DateTime.Today);
     }
 
     public async Task ExportToExcelAsync(DateTime startDate, DateTime endDate, int employeeId)

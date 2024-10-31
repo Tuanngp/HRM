@@ -5,6 +5,8 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HRM.Models;
+using HRM.Service;
+using HRM.Service.ServiceImpl;
 using HRM.Views;
 using HRM.Views.User;
 using MessageBox = System.Windows.Forms.MessageBox;
@@ -14,6 +16,8 @@ namespace HRM.ViewModels;
 public partial class UserViewModel : ObservableObject
 {
     private readonly Frame _navigationFrame;
+    private readonly IAttendanceService _attendanceService;
+
     [ObservableProperty] private string? userName;
     [ObservableProperty] private string? userPosition;
     [ObservableProperty] private string? userAvatar;
@@ -24,35 +28,44 @@ public partial class UserViewModel : ObservableObject
     public UserViewModel(Frame navigationFrame)
     {
         _navigationFrame = navigationFrame;
-        InitializeCommands();
-        LoadUserData();
-    }
-    
-    public ICommand? CheckInOutCommand { get; private set; }
-    public ICommand? NavigateCommand { get; private set; }
-    public ICommand? ShowNotificationsCommand { get; private set; }
-    public ICommand? LogoutCommand { get; set; }
-
-    private void InitializeCommands()
-    {
-        CheckInOutCommand = new RelayCommand(ExecuteCheckInOut);
-        NavigateCommand = new RelayCommand<string>(ExecuteNavigate);
-        ShowNotificationsCommand = new RelayCommand(ExecuteShowNotifications);
+        _attendanceService = new AttendanceService();
+        _ = LoadUserData();
     }
 
-    private void ExecuteCheckInOut()
+    public ICommand LogoutCommand { get; set; } = null!;
+
+    [RelayCommand]
+    private async Task CheckInOut()
     {
         try
         {
-            CheckInStatus = DateTime.Now.ToString("HH:mm:ss");
+            if (CheckInStatus == "Chưa điểm danh")
+            {
+                CheckInStatus = "Đã điểm danh\n";
+                await _attendanceService.CheckInAsync(UserSession.Instance.Employee!.Id);
+                MessageBox.Show("Điểm danh thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                var result = MessageBox.Show("Bạn có muốn điểm danh ra không?", "Điểm danh ra", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    CheckInStatus = "Đã điểm danh ra\n";
+                    await _attendanceService.CheckOutAsync(UserSession.Instance.Employee!.Id);
+                    MessageBox.Show("Điểm danh ra thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+
+            CheckInStatus += DateTime.Now.ToString("HH:mm:ss");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error during check in/out: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Lỗi trong quá trình điểm danh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
-    private void ExecuteNavigate(string? destination)
+    [RelayCommand]
+    private void Navigate(string? destination)
     {
         switch (destination)
         {
@@ -74,9 +87,10 @@ public partial class UserViewModel : ObservableObject
         }
     }
 
-    private void ExecuteShowNotifications()
+    [RelayCommand]
+    private void ShowNotifications()
     {
-
+        // Implement notification logic here
     }
 
     private async Task LoadUserData()
@@ -85,17 +99,17 @@ public partial class UserViewModel : ObservableObject
         {
             var user = UserSession.Instance.User;
             NotificationCount = user!.NotificationReceiverUsers.Count;
-            CheckInStatus = "Not checked in";
             var emp = await UserSession.Instance.GetEmployee();
+            CheckInStatus = await _attendanceService.HasCheckedInTodayAsync(UserSession.Instance.Employee!.Id)
+                ? "Đã điểm danh"
+                : "Chưa điểm danh";
             UserName = emp.FullName;
-            UserPosition = "Software Developer";
+            UserPosition = "Lập trình viên";
             UserAvatar = emp.PhotoPath;
-            
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error loading user data: {ex.Message}", "Error", MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            MessageBox.Show($"Lỗi trong quá trình tải dữ liệu người dùng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

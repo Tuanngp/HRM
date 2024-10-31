@@ -5,7 +5,6 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HRM.Models;
-using HRM.Models.Enum;
 using HRM.Service;
 using HRM.Service.ServiceImpl;
 using Microsoft.Win32;
@@ -16,15 +15,19 @@ public partial class EmployeeDetailViewModel : ObservableObject
 {
     private readonly IEmployeeService _employeeService;
     private readonly IDepartmentService _departmentService;
+    private readonly IUserService _userService = new UserService();
 
     [ObservableProperty] private Employee? employee;
     [ObservableProperty] private bool isEditable;
     [ObservableProperty] private bool isNewEmployee;
-    [ObservableProperty] private string title;
+    [ObservableProperty] private string title = null!;
     [ObservableProperty] private int employeeId;
+    [ObservableProperty] private string? avatarPath;
+    [ObservableProperty] private Department? selectedDepartment;
+    
 
     [ObservableProperty] private ObservableCollection<Department?> departments;
-    [ObservableProperty] private ObservableCollection<string> genders;
+    [ObservableProperty] private ObservableCollection<string> genders = ["Male", "Female", "Other"];
 
     public EmployeeDetailViewModel(int empId)
     {
@@ -36,10 +39,9 @@ public partial class EmployeeDetailViewModel : ObservableObject
         ChangePhotoCommand = new RelayCommand(ExecuteChangePhoto);
 
         EmployeeId = empId;
-        Genders = new ObservableCollection<string> { "Male", "Female", "Other" };
         Initialize();
         LoadDepartments();
-        IsEditable = UserSession.Instance.User.Role == "Admin";
+        IsEditable = UserSession.Instance.User!.Role == "Admin";
     }
 
     public ICommand SaveCommand { get; }
@@ -49,18 +51,21 @@ public partial class EmployeeDetailViewModel : ObservableObject
     public void Initialize()
     {
         IsNewEmployee = EmployeeId <= 0;
-        Title = IsNewEmployee ? "Add New Employee" : "Edit Employee";
-
         if (IsNewEmployee)
         {
+            AvatarPath = "/Assets/avatar/default.jpg";
+            Title = "Thêm thông tin nhân viên mới";
             Employee = new Employee
             {
+                DateOfBirth = new DateOnly(1990, 1, 1),
                 HireDate = DateOnly.FromDateTime(DateTime.Now),
             };
         }
         else
         {
             LoadEmployee();
+            AvatarPath = Employee?.PhotoPath;
+            Title = "Cập nhật thông tin nhân viên";
         }
     }
 
@@ -72,7 +77,7 @@ public partial class EmployeeDetailViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load employee: {ex.Message}","Error");
+            MessageBox.Show($"Lỗi trong quá trình tải dữ liệu nhân viên: {ex.Message}", "Lỗi");
         }
     }
 
@@ -80,12 +85,12 @@ public partial class EmployeeDetailViewModel : ObservableObject
     {
         try
         {
-            var departments = await _departmentService.GetAllDepartments();
-            Departments = new ObservableCollection<Department?>(departments);
+            var departmentsLoading = await _departmentService.GetAllDepartments();
+            Departments = new ObservableCollection<Department?>(departmentsLoading);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load departments: {ex.Message}","Error");
+            MessageBox.Show($"Lỗi trong quá trình tải dữ liệu phòng ban: {ex.Message}", "Lỗi");
         }
     }
 
@@ -100,18 +105,29 @@ public partial class EmployeeDetailViewModel : ObservableObject
 
             if (IsNewEmployee)
             {
+                var user = await _userService.AddAsync(new User()
+                {
+                    Username = Employee!.Email,
+                    Password = "123456",
+                    CreatedDate = DateTime.Now,
+                    Role = "User"
+                });
+                Employee!.UserId = user!.Id;
                 await _employeeService.CreateEmployeeAsync(Employee);
             }
             else
             {
                 await _employeeService.UpdateEmployeeAsync(EmployeeId, Employee);
             }
-            MessageBox.Show(IsNewEmployee ? "Employee created successfully!" : "Employee updated successfully!", "Success");
+
+            MessageBox.Show(
+                IsNewEmployee ? "Thêm thông tin nhân viên thành công!" : "Cập nhật thông tin nhân viên thành công!",
+                "Thành công");
             CloseWindow();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to save employee: {ex.Message}", "Error");
+            MessageBox.Show($"Lưu thông tin nhân viên thất bại: {ex.Message}", "Lỗi");
         }
     }
 
@@ -129,8 +145,8 @@ public partial class EmployeeDetailViewModel : ObservableObject
     {
         var openFileDialog = new OpenFileDialog
         {
-            Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
-            Title = "Select Employee Photo"
+            Filter = "Tệp hình ảnh (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|Tất cả các tệp (*.*)|*.*",
+            Title = "Chọn Ảnh Đại Diện Nhân Viên"
         };
 
         if (openFileDialog.ShowDialog() == true)
@@ -138,74 +154,84 @@ public partial class EmployeeDetailViewModel : ObservableObject
             try
             {
                 string newPhotoPath = SavePhotoToStorage(openFileDialog.FileName);
-                Employee.PhotoPath = newPhotoPath;
-                if (await _employeeService.UploadAvatarAsync(EmployeeId, newPhotoPath))
+                Employee!.PhotoPath = newPhotoPath;
+                if (IsNewEmployee)
                 {
-                    MessageBox.Show("Photo changed successfully!", "Success");
+                    Employee.PhotoPath = newPhotoPath;
+                    AvatarPath = newPhotoPath;
+                    MessageBox.Show("Thêm ảnh đại diện thành công!", "Thành công", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
                 }
-                else
-                {
-                    MessageBox.Show("Failed to change photo", "Error");
-                }
+
+                await _employeeService.UploadAvatarAsync(EmployeeId, newPhotoPath);
+                AvatarPath = newPhotoPath;
+                MessageBox.Show("Thay ảnh đại diện thành công!", "Thành công", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show( $"Failed to change photo: {ex.Message}", "Error");
+                MessageBox.Show("Thay ảnh đại diện thất bại: " + ex, "Lỗi");
             }
         }
     }
 
     private string SavePhotoToStorage(string sourceFilePath)
     {
-        // Define the directory where photos will be stored
         string photoDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "avatar");
 
-        // Ensure the directory exists
         if (!Directory.Exists(photoDirectory))
         {
             Directory.CreateDirectory(photoDirectory);
         }
 
-        // Generate a unique file name for the photo
         string fileName = Path.GetFileName(sourceFilePath);
         string destinationFilePath = Path.Combine(photoDirectory, fileName);
 
-        // Copy the photo to the storage directory
+        int count = 1;
+        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+        string extension = Path.GetExtension(fileName);
+
+        while (File.Exists(destinationFilePath))
+        {
+            string tempFileName = $"{fileNameWithoutExtension}({count++}){extension}";
+            destinationFilePath = Path.Combine(photoDirectory, tempFileName);
+        }
+
         File.Copy(sourceFilePath, destinationFilePath, true);
 
-        // Return the new file path
         return destinationFilePath;
     }
 
     private bool ValidateEmployee()
     {
-        if (string.IsNullOrWhiteSpace(Employee.FullName))
+        if (string.IsNullOrWhiteSpace(Employee!.FirstName) || string.IsNullOrWhiteSpace(Employee.LastName))
         {
-            MessageBox.Show( "Full name is required.", "Validation Error");
+            MessageBox.Show("Vui lòng nhập họ và tên.", "Lỗi xác thực");
             return false;
         }
 
         if (Employee.DateOfBirth > DateOnly.FromDateTime(DateTime.Now))
         {
-            MessageBox.Show("Birth date cannot be in the future.", "Validation Error");
+            MessageBox.Show("Ngày sinh không thể vượt quá ngày hiện tại.", "Lỗi xác thực");
             return false;
         }
 
         if (Employee.HireDate > DateOnly.FromDateTime(DateTime.Now))
         {
-            MessageBox.Show( "Start date cannot be in the future.", "Validation Error");
+            MessageBox.Show("Ngày bắt đầu không được vượt quá ngày hiện tại.", "Lỗi xác thực");
             return false;
         }
 
         if (Employee.BasicSalary < 0)
         {
-            MessageBox.Show("Salary cannot be negative.", "Validation Error");
+            MessageBox.Show("Mức lương phải là số dương.", "Lỗi xác thực");
             return false;
         }
 
-        if (Employee.Department == null)
+        if (SelectedDepartment == null)
         {
-            MessageBox.Show("Department is required.", "Validation Error");
+            MessageBox.Show("Vui lòng chọn phòng ban.", "Lỗi xác thực");
             return false;
         }
 

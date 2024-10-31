@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRM.Service.ServiceImpl;
 
-public class AttendanceService : IAttendanceService
+public class AttendanceService() : BaseRepository<Attendance>(new HrmContext()), IAttendanceService
     {
-        private readonly IAttendanceRepository _attendanceRepository;
-
-        public AttendanceService()
-        {
-            _attendanceRepository = new AttendanceRepository(new HrmContext());
-        }
+        private readonly IAttendanceRepository _attendanceRepository = new AttendanceRepository(new HrmContext());
 
         public async Task<IEnumerable<Attendance>> GetAttendancesByDateAsync(DateTime? date, int employeeId)
         {
@@ -32,31 +27,6 @@ public class AttendanceService : IAttendanceService
         public async Task<bool> HasCheckedInTodayAsync(int employeeId)
         {
             return await _attendanceRepository.HasCheckedInTodayAsync(employeeId);
-        }
-
-        public Task<Attendance?> GetByIdAsync(int id)
-        {
-            return _attendanceRepository.GetByIdAsync(id);
-        }
-
-        public Task<IEnumerable<Attendance?>> GetAllAsync()
-        {
-            return _attendanceRepository.GetAllAsync();
-        }
-
-        public async Task<Attendance?> AddAsync(Attendance? attendance)
-        {
-            return await _attendanceRepository.AddAsync(attendance);
-        }
-
-        public Task UpdateAsync(Attendance? entity)
-        {
-            return _attendanceRepository.UpdateAsync(entity);
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            return _attendanceRepository.DeleteAsync(id);
         }
 
         public async Task ExportToExcelAsync(DateTime startDate, DateTime endDate, int employeeId)

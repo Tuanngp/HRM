@@ -13,6 +13,7 @@ namespace HRM.ViewModels;
 public partial class UserProfileViewModel : ObservableObject
 {
     private IAuthService authService;
+    private IEmployeeService employeeService;
     
     [ObservableProperty] private string? fullName;
     [ObservableProperty] private string? jobTitle;
@@ -37,23 +38,11 @@ public partial class UserProfileViewModel : ObservableObject
     [ObservableProperty] private DateTime contractEndDate;
     [ObservableProperty] private bool isTwoFactorEnabled;
 
-    public ObservableCollection<string> GenderOptions { get; } = new ObservableCollection<string>
-    {
-        "Nam",
-        "Nữ",
-        "Khác"
-    };
+    [ObservableProperty] private ObservableCollection<string> genderOptions = null!;
+    [ObservableProperty] private ObservableCollection<string> maritalStatusOptions = null!;
 
-    public ObservableCollection<string> MaritalStatusOptions { get; } = new ObservableCollection<string>
-    {
-        "Độc thân",
-        "Đã kết hôn",
-        "Ly hôn",
-        "Góa"
-    };
-
-    public ObservableCollection<WorkHistoryItem> WorkHistory { get; } = new ObservableCollection<WorkHistoryItem>();
-    public ObservableCollection<LoginHistoryItem> LoginHistory { get; } = new ObservableCollection<LoginHistoryItem>();
+    [ObservableProperty] private ObservableCollection<WorkHistoryItem> workHistory = null!;
+    [ObservableProperty] private ObservableCollection<LoginHistoryItem> loginHistory = null!;
 
     public ICommand? GoBackCommand { get; private set; }
     public ICommand? ChangeProfileImageCommand { get; private set; }
@@ -65,6 +54,7 @@ public partial class UserProfileViewModel : ObservableObject
     {
         InitializeCommands();
         authService = new AuthService();
+        employeeService = new EmployeeService();
         LoadUserData();
     }
 
@@ -77,28 +67,24 @@ public partial class UserProfileViewModel : ObservableObject
         ChangePasswordCommand = new RelayCommand<object>(ExecuteChangePassword);
     }
 
-    #region Command Implementations
-
     private void ExecuteGoBack()
     {
-        // Implement navigation back logic
     }
 
     private void ExecuteChangeProfileImage()
     {
-        // Implement profile image change logic
+
     }
 
     private void ExecuteEditProfile()
     {
-        // Implement profile editing logic
+
     }
 
     private void ExecuteSavePersonalInfo()
     {
         try
         {
-            // Implement save logic here
             MessageBox.Show("Thông tin đã được lưu thành công!", "Thành công",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -112,27 +98,24 @@ public partial class UserProfileViewModel : ObservableObject
     private void ExecuteChangePassword(object? parameter)
     {
         var user = UserSession.Instance.User;
-        authService.ChangePasswordAsync(user.Id, user.Password, (string)parameter);
+        authService.ChangePasswordAsync(user!.Id, user.Password, (string)parameter!);
     }
 
-    #endregion
-
-    private void LoadUserData()
+    private async Task LoadUserData()
     {
-        // Load user data from service
         try
         {
-            // Simulate loading data
-            FullName = "Nguyễn Văn A";
+            var employee = await employeeService.GetByIdAsync(UserSession.Instance.User!.Id);
+            FullName = employee!.FullName;
             JobTitle = "Software Developer";
-            Department = "IT Department";
-            ProfileImage = "/Assets/profile.jpg";
-            DateOfBirth = new DateTime(1990, 1, 1);
-            IdNumber = "123456789";
-            Address = "123 ABC Street";
-            Email = "nguyenvana@example.com";
-            PhoneNumber = "0123456789";
-            SelectedGender = "Nam";
+            Department = employee.Department?.Name;
+            ProfileImage = employee.PhotoPath;
+            DateOfBirth = new DateTime(employee.DateOfBirth.Year, employee.DateOfBirth.Month, employee.DateOfBirth.Day);
+            IdNumber = employee.EmployeeCode;
+            Address = employee.Address;
+            Email = employee.Email;
+            PhoneNumber = employee.Phone;
+            SelectedGender = employee.Gender.ToString();
             SelectedMaritalStatus = "Độc thân";
 
             // Emergency contact
@@ -144,11 +127,12 @@ public partial class UserProfileViewModel : ObservableObject
             // Work information
             EmployeeId = "EMP001";
             ContractType = "Toàn thời gian";
-            JoinDate = new DateTime(2020, 1, 1);
+            JoinDate = new DateTime(employee.HireDate.Year, employee.HireDate.Month, employee.HireDate.Day);
             Manager = "Trần Văn C";
-            Status = "Đang làm việc";
+            Status = employee.Status.ToString();
             ContractEndDate = new DateTime(2024, 12, 31);
-
+            
+            LoadOptions();
             LoadWorkHistory();
             LoadLoginHistory();
         }
@@ -184,20 +168,21 @@ public partial class UserProfileViewModel : ObservableObject
             Status = "Thành công"
         });
     }
-}
-
-public class WorkHistoryItem
-{
-    public string Period { get; set; }
-    public string Department { get; set; }
-    public string Position { get; set; }
-    public string Manager { get; set; }
-}
-
-public class LoginHistoryItem
-{
-    public DateTime LoginTime { get; set; }
-    public string Device { get; set; }
-    public string IpAddress { get; set; }
-    public string Status { get; set; }
+    
+    private void LoadOptions()
+    {
+        GenderOptions = new ObservableCollection<string>
+        {
+            "Nam",
+            "Nữ",
+            "Khác"
+        };
+        MaritalStatusOptions = new ObservableCollection<string>
+        {
+            "Độc thân",
+            "Đã kết hôn",
+            "Ly thân",
+            "Đã ly hôn"
+        };
+    }
 }

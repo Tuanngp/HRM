@@ -79,7 +79,7 @@ public partial class HrmContext : DbContext
         modelBuilder.Entity<Department>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC07B82FEBF2");
-
+        
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");

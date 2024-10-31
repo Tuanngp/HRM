@@ -8,8 +8,9 @@ public class UserSession
     private static UserSession? _instance;
     public static UserSession Instance => _instance ??= new UserSession();
 
-    public User? User { get; private set; }
+    public User? User { get; set; }
     public Employee? Employee { get; set; }
+    public string? LastPageVisited { get; set; }
 
     private UserSession() { }
 
@@ -28,4 +29,12 @@ public class UserSession
     {
         User = null;
     }
+}
+
+public partial class SessionData
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; }
+    public string LastPage { get; set; }
 }

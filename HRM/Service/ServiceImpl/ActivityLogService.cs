@@ -1,9 +1,10 @@
-﻿namespace HRM.Service.ServiceImpl;
+﻿using HRM.Models;
+using HRM.Repositories;
+using HRM.Repositories.RepositoryImpl;
 
-public class ActivityLogService : IActivityLogService
+namespace HRM.Service.ServiceImpl;
+
+public class ActivityLogService() : BaseRepository<ActivityLog>(new HrmContext()), IActivityLogService
 {
-    public Task LogActivityAsync(string employeeCreated, string s)
-    {
-        throw new NotImplementedException();
-    }
+    private readonly IActivityLogRepository _activityLogRepository = new ActivityLogRepository(new HrmContext());
 }

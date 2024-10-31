@@ -3,6 +3,7 @@ using HRM.Views.Admin;
 using HRM.Views.User;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using HRM.Models;
 
 namespace HRM.Service.ServiceImpl;
 
@@ -10,12 +11,27 @@ public class NavigationService : INavigationService
 {
     private readonly Frame _frame;
     private readonly Dictionary<string, Type> _pageMap;
-    private object _parameter;
+    private object _parameter = null!;
 
+    public string LastPageVisited { get; private set; } = string.Empty;
+    
+    public void OnNavigated(object sender, EventArgs e)
+    {
+        if (sender is Frame frame && frame.Content is Page page)
+        {
+            LastPageVisited = page.GetType().Name;
+            UserSession.Instance.LastPageVisited = LastPageVisited;
+        }
+    }
+
+    public NavigationService()
+    {
+        
+    }
     public NavigationService(Frame frame)
     {
         _frame = frame ?? throw new ArgumentNullException(nameof(frame));
-        _frame.Navigated += Frame_Navigated;
+        _frame.Navigated += OnNavigated;
 
         // Đăng ký các pages
         _pageMap = new Dictionary<string, Type>
@@ -38,7 +54,7 @@ public class NavigationService : INavigationService
 
     public object Parameter => _parameter;
 
-    public event EventHandler<NavigationEventArgs> Navigated;
+    public event EventHandler<NavigationEventArgs> Navigated = null!;
 
     public void GoBack()
     {

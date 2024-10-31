@@ -46,8 +46,7 @@
                             <DataTemplate>
                                 <StackPanel>
                                     <TextBlock Text="Chấm công" />
-                                    <TextBlock Text="{Binding CheckInStatus}"
-                                               FontSize="10" />
+                                    <TextBlock Text="{Binding CheckInStatus}" />
                                 </StackPanel>
                             </DataTemplate>
                         </MenuItem.HeaderTemplate>

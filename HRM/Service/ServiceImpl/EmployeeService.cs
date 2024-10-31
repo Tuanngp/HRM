@@ -1,12 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using HRM.Models;
 using HRM.Models.Enum;
 using HRM.Repositories;
 using HRM.Repositories.RepositoryImpl;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 
@@ -14,16 +12,9 @@ namespace HRM.Service.ServiceImpl;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly IEmployeeRepository _employeeRepository;
-    private readonly IActivityLogService _activityLogService;
-    private readonly ILogger<EmployeeService> _logger;
-    public EmployeeService(
-    )
-    {
-        _employeeRepository = new EmployeeRepository(new HrmContext());
-        _activityLogService = new ActivityLogService();
-        _logger = new Logger<EmployeeService>(new LoggerFactory());
-    }
+    private readonly IEmployeeRepository _employeeRepository = new EmployeeRepository(new HrmContext());
+    private readonly IActivityLogService _activityLogService = new ActivityLogService();
+    private readonly ILogger<EmployeeService> _logger = new Logger<EmployeeService>(new LoggerFactory());
 
     public async Task<Employee?> GetByIdAsync(int id)
     {
@@ -38,13 +29,13 @@ public class EmployeeService : IEmployeeService
     public async Task<Employee?> GetByUserId(int userId)
     {
         return await _employeeRepository.GetQueryable()
-            .FirstOrDefaultAsync(e => e.UserId == userId);
+            .FirstOrDefaultAsync(e => e!.UserId == userId);
     }
 
     public Task<Employee?> GetByEmployeeCodeAsync(string code)
     {
         return _employeeRepository.GetQueryable()
-            .FirstOrDefaultAsync(e => ("EMP" + e.Id.ToString().PadLeft(5, '0')) == code);
+            .FirstOrDefaultAsync(e => ("EMP" + e!.Id.ToString().PadLeft(5, '0')) == code);
     }
 
     public async Task<IEnumerable<Employee?>> GetAllEmployees()
@@ -60,7 +51,7 @@ public class EmployeeService : IEmployeeService
             ValidateEmployee(employee);
 
             // Set default values for new employee
-            employee.Status = EmployeeStatus.Active;
+            employee!.Status = EmployeeStatus.Active;
             employee.HireDate = employee.HireDate == default ? DateOnly.FromDateTime(DateTime.Now) : employee.HireDate;
 
             // Save employee
@@ -76,7 +67,7 @@ public class EmployeeService : IEmployeeService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating employee: {EmployeeCode}", employee.EmployeeCode);
+            _logger.LogError(ex, "Error creating employee: {EmployeeCode}", employee!.EmployeeCode);
             throw;
         }
     }
@@ -89,7 +80,7 @@ public class EmployeeService : IEmployeeService
         {
             ValidateEmployee(updatedEmployee);
 
-            updatedEmployee.Id = existingEmployee.Id;
+            updatedEmployee!.Id = existingEmployee!.Id;
             updatedEmployee.ModifiedDate = DateTime.Now;
             updatedEmployee.PhotoPath = existingEmployee.PhotoPath;
 
@@ -141,23 +132,23 @@ public class EmployeeService : IEmployeeService
 
         if (!string.IsNullOrEmpty(selectedGender) && Enum.TryParse<Gender>(selectedGender, out var gender))
         {
-            query = query.Where(e => e.Gender == gender);
+            query = query.Where(e => e!.Gender == gender);
         }
 
         if (!string.IsNullOrEmpty(selectedSalaryRange))
         {
             var salaryRange = selectedSalaryRange.Split('-').Select(decimal.Parse).ToArray();
-            query = query.Where(e => e.BasicSalary >= salaryRange[0] && e.BasicSalary <= salaryRange[1]);
+            query = query.Where(e => e!.BasicSalary >= salaryRange[0] && e.BasicSalary <= salaryRange[1]);
         }
         
         if (startDate.HasValue)
         {
-            query = query.Where(e => e.HireDate >= DateOnly.FromDateTime(startDate.Value));
+            query = query.Where(e => e!.HireDate >= DateOnly.FromDateTime(startDate.Value));
         }
 
         if (endDate.HasValue)
         {
-            query = query.Where(e => e.HireDate <= DateOnly.FromDateTime(endDate.Value));
+            query = query.Where(e => e!.HireDate <= DateOnly.FromDateTime(endDate.Value));
         }
 
         return await query.ToListAsync();
@@ -165,13 +156,13 @@ public class EmployeeService : IEmployeeService
 
     public async Task<decimal> CalculateTotalSalaryAsync(int employeeId, int month, int year)
     {
-        // var employee = await _employeeRepository.GetByIdAsync(employeeId);
-        // if (employee == null)
-        // {
-        //     throw new KeyNotFoundException($"Employee with ID {employeeId} not found");
-        // }
-        //
-        // // Assuming you have a method to calculate the salary based on the month and year
+        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        if (employee == null)
+        {
+            throw new KeyNotFoundException($"Employee with ID {employeeId} not found");
+        }
+        
+        // Assuming you have a method to calculate the salary based on the month and year
         // var totalSalary = await _salaryCalculationService.CalculateTotalSalaryAsync(employee, new DateTime(year, month, 1));
         // return totalSalary;
         return 0;
@@ -185,7 +176,7 @@ public class EmployeeService : IEmployeeService
         try
         {
             // Update employee record
-            employee.PhotoPath = avatar;
+            employee!.PhotoPath = avatar;
             await _employeeRepository.UpdateAsync(employee);
             return true;
         }
@@ -205,7 +196,7 @@ public class EmployeeService : IEmployeeService
             var worksheet = package.Workbook.Worksheets.Add("Employees");
     
             // Add headers
-            var headers = new string[]
+            var headers = new[]
             {
                 "Employee Code",
                 "Full Name",
@@ -228,7 +219,7 @@ public class EmployeeService : IEmployeeService
             int row = 2;
             foreach (var employee in employees)
             {
-                worksheet.Cells[row, 1].Value = employee.EmployeeCode;
+                worksheet.Cells[row, 1].Value = employee!.EmployeeCode;
                 worksheet.Cells[row, 2].Value = employee.FullName;
                 worksheet.Cells[row, 3].Value = employee.Department?.Name;
                 worksheet.Cells[row, 4].Value = employee.Phone;
@@ -255,7 +246,7 @@ public class EmployeeService : IEmployeeService
     {
         var validationErrors = new List<string>();
     
-        if (string.IsNullOrEmpty(employee.FirstName))
+        if (string.IsNullOrEmpty(employee!.FirstName))
             validationErrors.Add("First name is required");
     
         if (string.IsNullOrEmpty(employee.LastName))
