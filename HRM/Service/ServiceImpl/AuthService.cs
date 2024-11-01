@@ -40,8 +40,10 @@ public class AuthService() : BaseRepository<User>(new HrmContext()), IAuthServic
         return Task.FromResult(true);
     }
 
-    public Task LogoutAsync(int userId)
+    public Task LogoutAsync()
     {
+        UserSession.Instance.Clear();
+        File.Delete("UserSession.json");
         return Task.CompletedTask;
     }
 

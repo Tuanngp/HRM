@@ -32,8 +32,7 @@ public class NavigationService : INavigationService
     {
         _frame = frame ?? throw new ArgumentNullException(nameof(frame));
         _frame.Navigated += OnNavigated;
-
-        // Đăng ký các pages
+        
         _pageMap = new Dictionary<string, Type>
         {
             { "LoginView", typeof(LoginView) },
@@ -68,7 +67,7 @@ public class NavigationService : INavigationService
     {
         if (!_pageMap.ContainsKey(viewName))
         {
-            throw new ArgumentException($"Page {viewName} not found in page map.");
+            throw new ArgumentException($"Trang {viewName} không tìm thấy ở hệ thống.");
         }
 
         _parameter = parameter;

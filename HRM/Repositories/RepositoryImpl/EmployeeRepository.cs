@@ -36,10 +36,8 @@ public class EmployeeRepository(HrmContext context) : BaseRepository<Employee>(c
 		{
 			query = query.Where(e =>
 				e.FullName.Contains(searchTerm) ||
-				e.EmployeeCode.Contains(searchTerm) ||
 				e.Phone!.Contains(searchTerm) ||
 				e.Address!.Contains(searchTerm) ||
-				e.Gender.ToString().Contains(searchTerm) ||
 				e.Email.Contains(searchTerm));
 		}
 

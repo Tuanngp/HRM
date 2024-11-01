@@ -163,6 +163,12 @@
                                          materialDesign:HintAssist.Hint="Họ"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          IsEnabled="{Binding IsEditable}" />
+                                
+                                <TextBox Text="{Binding Employee.Email}"
+                                         Margin="0, 15"
+                                         materialDesign:HintAssist.Hint="Email"
+                                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                         IsEnabled="{Binding IsEditable}" />
 
                                 <DatePicker
                                     materialDesign:HintAssist.Hint="Ngày sinh"
@@ -229,6 +235,13 @@
                                          materialDesign:HintAssist.Hint="Lương cơ bản"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          IsEnabled="{Binding IsEditable}" />
+                                <ComboBox ItemsSource="{Binding EmployeeStatuses}"
+                                          SelectedValue="{Binding Employee.Status}"
+                                          SelectedItem="{Binding SelectedStatus}"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                          Margin="0, 15"
+                                          materialDesign:HintAssist.Hint="Trạng thái"
+                                          IsEnabled="{Binding IsEditable}" />
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -236,10 +249,11 @@
 
                 <!-- Buttons -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                    <Button Content="Save" Command="{Binding SaveCommand}"
+                    <Button Content="Lưu thông tin" Command="{Binding SaveCommand}"
+                            Margin="20, 0"
                             Style="{StaticResource MaterialDesignRaisedButton}"
                             Visibility="{Binding IsEditable, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <Button Content="Cancel" Command="{Binding CancelCommand}"
+                    <Button Content="Hủy" Command="{Binding CancelCommand}"
                             Style="{StaticResource MaterialDesignOutlinedButton}" />
                 </StackPanel>
             </Grid>

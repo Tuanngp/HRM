@@ -142,7 +142,7 @@ public partial class EmployeeListViewModel : ObservableObject
     [RelayCommand]
     private void AddEmployee()
     {
-        OpenEmployeeDetailView(0);
+        OpenEmployeeDetailView(0, true);
     }
 
     [RelayCommand]
@@ -159,13 +159,13 @@ public partial class EmployeeListViewModel : ObservableObject
     [RelayCommand]
     private void ViewEmployee(Employee? employee)
     {
-        OpenEmployeeDetailView(employee!.Id);
+        OpenEmployeeDetailView(employee!.Id, false);
     }
 
     [RelayCommand]
     private void EditEmployee(Employee? employee)
     {
-        OpenEmployeeDetailView(employee!.Id);
+        OpenEmployeeDetailView(employee!.Id, true);
     }
 
     [RelayCommand]
@@ -202,17 +202,27 @@ public partial class EmployeeListViewModel : ObservableObject
         };
     }
 
-    private void OpenEmployeeDetailView(int employeeId)
+    private void OpenEmployeeDetailView(int employeeId, bool isEdit)
     {
-        var employeeDetailView = new EmployeeDetailView(employeeId);
+        var employeeDetailView = new EmployeeDetailView(employeeId, isEdit);
+        var viewModel = (EmployeeDetailViewModel)employeeDetailView.DataContext;
+        viewModel.EmployeeSaved += EmployeeDetailView_EmployeeSaved;
         employeeDetailView.Closed += EmployeeDetailView_Closed;
         employeeDetailView.Show();
+    }
+    
+    private async void EmployeeDetailView_EmployeeSaved(object? sender, EventArgs e)
+    {
+        await LoadEmployees();
     }
 
     private void EmployeeDetailView_Closed(object? sender, EventArgs e)
     {
-        ((EmployeeDetailView)sender!).Closed -= EmployeeDetailView_Closed;
-        _ = LoadData();
+        var employeeDetailView = (EmployeeDetailView)sender!;
+        var viewModel = (EmployeeDetailViewModel)employeeDetailView.DataContext;
+        viewModel.EmployeeSaved -= EmployeeDetailView_EmployeeSaved;
+        employeeDetailView.Closed -= EmployeeDetailView_Closed;
+        _ = LoadEmployees();
     }
 
     public async Task SaveExcelFileAsync(byte[] excelData, string filePath)

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HRM.Models;
+using HRM.Models.Enum;
 using HRM.Service;
 using HRM.Service.ServiceImpl;
 using Microsoft.Win32;
@@ -26,10 +27,12 @@ public partial class EmployeeDetailViewModel : ObservableObject
     [ObservableProperty] private Department? selectedDepartment;
     
 
-    [ObservableProperty] private ObservableCollection<Department?> departments;
-    [ObservableProperty] private ObservableCollection<string> genders = ["Male", "Female", "Other"];
+    [ObservableProperty] private ObservableCollection<Department?> departments = null!;
+    [ObservableProperty] private ObservableCollection<EmployeeStatus> employeeStatuses = null!;
+    [ObservableProperty] private ObservableCollection<string> genders = null!;
 
-    public EmployeeDetailViewModel(int empId)
+    public event EventHandler? EmployeeSaved;
+    public EmployeeDetailViewModel(int empId, bool isEdit)
     {
         _employeeService = new EmployeeService();
         _departmentService = new DepartmentService();
@@ -37,11 +40,9 @@ public partial class EmployeeDetailViewModel : ObservableObject
         SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
         CancelCommand = new RelayCommand(ExecuteCancel);
         ChangePhotoCommand = new RelayCommand(ExecuteChangePhoto);
-
         EmployeeId = empId;
+        IsEditable = isEdit;
         Initialize();
-        LoadDepartments();
-        IsEditable = UserSession.Instance.User!.Role == "Admin";
     }
 
     public ICommand SaveCommand { get; }
@@ -50,6 +51,7 @@ public partial class EmployeeDetailViewModel : ObservableObject
 
     public void Initialize()
     {
+        LoadCollections();
         IsNewEmployee = EmployeeId <= 0;
         if (IsNewEmployee)
         {
@@ -59,6 +61,8 @@ public partial class EmployeeDetailViewModel : ObservableObject
             {
                 DateOfBirth = new DateOnly(1990, 1, 1),
                 HireDate = DateOnly.FromDateTime(DateTime.Now),
+                Status = EmployeeStatus.Active,
+                CreatedDate = DateTime.Now
             };
         }
         else
@@ -81,17 +85,44 @@ public partial class EmployeeDetailViewModel : ObservableObject
         }
     }
 
-    private async void LoadDepartments()
+    private async void LoadCollections()
     {
         try
         {
             var departmentsLoading = await _departmentService.GetAllDepartments();
             Departments = new ObservableCollection<Department?>(departmentsLoading);
+            EmployeeStatuses = new ObservableCollection<EmployeeStatus>
+            {
+                EmployeeStatus.Active,
+                EmployeeStatus.Inactive,
+                EmployeeStatus.OnLeave,
+                EmployeeStatus.Terminated
+            };
+            Genders = new ObservableCollection<string>
+            {
+                "Nam",
+                "Nữ",
+                "Khác"
+            };
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Lỗi trong quá trình tải dữ liệu phòng ban: {ex.Message}", "Lỗi");
         }
+    }
+
+    private Gender GetGender(string str)
+    {
+        if (str == "Nam")
+        {
+            return Gender.Male;
+        }
+
+        if (str == "Nữ")
+        {
+            return Gender.Female;
+        }
+        return Gender.Other;
     }
 
     private async void ExecuteSave()
@@ -123,6 +154,7 @@ public partial class EmployeeDetailViewModel : ObservableObject
             MessageBox.Show(
                 IsNewEmployee ? "Thêm thông tin nhân viên thành công!" : "Cập nhật thông tin nhân viên thành công!",
                 "Thành công");
+            EmployeeSaved?.Invoke(this, EventArgs.Empty);
             CloseWindow();
         }
         catch (Exception ex)

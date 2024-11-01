@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿// MainWindow.xaml.cs
+using System.IO;
 using System.Text.Json;
 using System.Windows;
 using HRM.Models;
@@ -19,21 +20,28 @@ public partial class MainWindow : Window
         _navigationService = new NavigationService();
         _authService = new AuthService();
         _ = OnStart();
-        this.Close();
     }
 
     private async Task OnStart()
     {
         if (File.Exists("UserSession.json"))
         {
-            var sessionJson = await File.ReadAllTextAsync("UserSession.json");
-            var sessionData = JsonSerializer.Deserialize<SessionData>(sessionJson);
-
-            if (sessionData != null)
+            try
             {
-                var user = await _authService.LoginAsync(sessionData.Username, sessionData.Password);
-                await UserSession.Instance.SetUser(user);
-                UserSession.Instance.LastPageVisited = sessionData.LastPage;
+                var sessionJson = await File.ReadAllTextAsync("UserSession.json");
+                var sessionData = JsonSerializer.Deserialize<SessionData>(sessionJson);
+
+                if (sessionData != null)
+                {
+                    User user = await _authService.LoginAsync(sessionData.Username, sessionData.Password);
+                    await UserSession.Instance.SetUser(user);
+                    UserSession.Instance.LastPageVisited = sessionData.LastPage;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -41,6 +49,7 @@ public partial class MainWindow : Window
         {
             LoginView loginView = new LoginView();
             loginView.Show();
+            this.Close();
             return;
         }
 
@@ -51,15 +60,17 @@ public partial class MainWindow : Window
             {
                 case "Admin":
                     var adminWindow = new AdminWindow();
+                    adminWindow.AdminFrame.Navigated += _navigationService.OnNavigated;
                     adminWindow.Show();
-                    // mainWindow.AdminFrame.Navigated += _navigationService.OnNavigated;
-                    // _navigationService.NavigateTo(UserSession.Instance.LastPageVisited);
+                    this.Close();
+                    _navigationService.NavigateTo(UserSession.Instance.LastPageVisited);
                     break;
                 case "User":
                     var userWindow = new UserWindow();
+                    userWindow.UserFrame.Navigated += _navigationService.OnNavigated;
                     userWindow.Show();
-                    // userWindow.UserFrame.Navigated += _navigationService.OnNavigated;
-                    // _navigationService.NavigateTo(UserSession.Instance.LastPageVisited);
+                    this.Close();
+                    _navigationService.NavigateTo(UserSession.Instance.LastPageVisited);
                     break;
             }
         }

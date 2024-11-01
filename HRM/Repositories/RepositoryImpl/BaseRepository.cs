@@ -6,7 +6,7 @@ namespace HRM.Repositories.RepositoryImpl;
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
     private readonly HrmContext _context;
-    protected readonly DbSet<TEntity?> _dbSet;
+    protected DbSet<TEntity?> _dbSet;
 
     public BaseRepository(HrmContext context)
     {
@@ -18,7 +18,8 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     {
         try
         {
-            IQueryable<TEntity?> query = _dbSet;
+            var context = new HrmContext();
+            IQueryable<TEntity?> query = context.Set<TEntity>();
             query = AddIncludes(query);
             return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
@@ -33,10 +34,11 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     {
         try
         {
-            IQueryable<TEntity?> query = _dbSet;
+            var context = new HrmContext();
+            IQueryable<TEntity?> query = context.Set<TEntity>();
             query = AddIncludes(query);
 
-            return await query.ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
         }
         catch (Exception e)
         {
@@ -49,6 +51,8 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     {
         try
         {
+            var context = new HrmContext();
+            IQueryable<TEntity?> query = context.Set<TEntity>();
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
